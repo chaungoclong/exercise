@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\API\Auth\RegisterController;
+use App\Http\Controllers\Api\Auth\LoginController;
+use App\Http\Controllers\Api\Auth\LogoutController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +17,14 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('guest:sanctum')->get('/user', function (Request $request) {
+    return auth()->user();
 });
+
+// // login
+Route::post('login', [LoginController::class, 'login'])->name('api.login');
+
+// logout
+Route::post('logout', [LogoutController::class, 'logout'])
+    ->middleware('auth:sanctum')
+    ->name('api.logout');

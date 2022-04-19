@@ -13,7 +13,9 @@
     "fruitcake/laravel-cors": "^2.0",
     "guzzlehttp/guzzle": "^7.0.1",
     "laravel/framework": "^8.40",
-    "laravel/tinker": "^2.5"
+    "laravel/sanctum": "^2.15",
+    "laravel/tinker": "^2.5",
+    "realrashid/sweet-alert": "^5.0"
   },
   "require-dev": {
     "facade/ignition": "^2.5",
@@ -40,7 +42,8 @@
       "Database\\Seeders\\": "database/seeders/"
     },
     "files": [
-      "app/Helpers/helpers.php"
+      "app/Helpers/helpers.php",
+      "app/Helpers/common.php"
     ]
   },
   "autoload-dev": {

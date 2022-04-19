@@ -7,202 +7,198 @@
   Author URL: http://www.themeforest.net/user/pixinvent
 ==========================================================================================*/
 
-$(function () {
-  ;('use strict')
 
-  var assetsPath = '../../../app-assets/',
-    registerMultiStepsWizard = document.querySelector('.register-multi-steps-wizard'),
-    pageResetForm = $('.auth-register-form'),
-    select = $('.select2'),
-    creditCard = $('.credit-card-mask'),
-    expiryDateMask = $('.expiry-date-mask'),
-    cvvMask = $('.cvv-code-mask'),
-    mobileNumberMask = $('.mobile-number-mask'),
-    pinCodeMask = $('.pin-code-mask')
 
-  if ($('body').attr('data-framework') === 'laravel') {
-    assetsPath = $('body').attr('data-asset-path')
-  }
+(function($, window, document) {
+  $(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 
-  // jQuery Validation
-  // --------------------------------------------------------------------
-  if (pageResetForm.length) {
-    pageResetForm.validate({
-      /*
-      * ? To enable validation onkeyup
-      onkeyup: function (element) {
-        $(element).valid();
-      },*/
-      /*
-      * ? To enable validation on focusout
-      onfocusout: function (element) {
-        $(element).valid();
-      }, */
-      rules: {
-        'register-username': {
-          required: true
+    let RegisterPage = (function($, window, document) {
+      // config
+      const Config = {
+        // validate
+        validate: {
+          formAccountDetails: {
+            rules: {
+              username: {
+                required: true
+              },
+              password: {
+                required: true,
+                minlength: 8
+              },
+              'confirm_password': {
+                required: true,
+                minlength: 8,
+                equalTo: '#password'
+              },
+              email: {
+                required: true,
+                email: true
+              }
+            }
+          },
+          formPersonalInfo: {
+            rules: {
+              'first_name': {
+                required: true
+              },
+              'last_name': {
+                required: true
+              },
+              phone: {
+                required: true
+              },
+              birthday: {
+                required: true
+              },
+              address: {
+                required: true
+              },
+              gender: {
+                required: true
+              }
+            }
+          }
         },
-        'register-email': {
-          required: true,
-          email: true
-        },
-        'register-password': {
-          required: true
+
+        // url
+        url: {
+          registerAccountDetais: () => '/register/account-details',
+          registerPersonalInfo: () => '/register/personal-info',
         }
       }
-    })
-  }
 
-  // multi-steps registration
-  // --------------------------------------------------------------------
+      // form multiple step wizard
+      let registerMultiStepsWizard = document.querySelector('.register-multi-steps-wizard');
+      let numberedStepper = null;
 
-  // Horizontal Wizard
-  if (typeof registerMultiStepsWizard !== undefined && registerMultiStepsWizard !== null) {
-    var numberedStepper = new Stepper(registerMultiStepsWizard),
-      $form = $(registerMultiStepsWizard).find('form')
-    $form.each(function () {
-      var $this = $(this)
-      $this.validate({
-        rules: {
-          username: {
-            required: true
-          },
-          email: {
-            required: true
-          },
-          password: {
-            required: true,
-            minlength: 8
-          },
-          'confirm-password': {
-            required: true,
-            minlength: 8,
-            equalTo: '#password'
-          },
-          'first-name': {
-            required: true
-          },
-          'home-address': {
-            required: true
-          },
-          addCard: {
-            required: true
-          }
-        },
-        messages: {
-          password: {
-            required: 'Enter new password',
-            minlength: 'Enter at least 8 characters'
-          },
-          'confirm-password': {
-            required: 'Please confirm new password',
-            minlength: 'Enter at least 8 characters',
-            equalTo: 'The password and its confirm are not the same'
-          }
+      // form step
+      let $accountDetailsStep = $('#account-details');
+      let $personalInfoStep = $('#personal-info');
+
+      // form
+      let $formAccountDetails = $accountDetailsStep.find('form').first();
+      let $formPersonalInfo = $personalInfoStep.find('form').first();
+
+      // btn submit step
+      let $btnSubmitAccountDetails = $('#submitAccountDetails');
+      let $btnSubmitPersonalInfo = $('#submitPersonalInfo');
+
+      // birthday date picker
+      let $birthdayDatePicker = $('#birthday');
+
+      // init date picker
+      const initDatePicker = () => {
+        if ($birthdayDatePicker.length) {
+          $birthdayDatePicker.flatpickr({
+            allowInput: true,
+            onReady: function (selectedDates, dateStr, instance) {
+              if (instance.isMobile) {
+                $(instance.mobileInput).attr('step', null);
+              }
+            }
+          });
         }
-      })
-    })
+      }
 
-    $(registerMultiStepsWizard)
-      .find('.btn-next')
-      .each(function () {
-        $(this).on('click', function (e) {
-          var isValid = $(this).parent().siblings('form').valid()
-          if (isValid) {
-            numberedStepper.next()
-          } else {
-            e.preventDefault()
-          }
-        })
-      })
+      // init form
+      const initForms = () => {
+         if (registerMultiStepsWizard !== undefined && registerMultiStepsWizard !== null) {
+          // create stepper
+          numberedStepper = new Stepper(registerMultiStepsWizard);
 
-    $(registerMultiStepsWizard)
-      .find('.btn-prev')
-      .on('click', function () {
-        numberedStepper.previous()
-      })
-
-    $(registerMultiStepsWizard)
-      .find('.btn-submit')
-      .on('click', function () {
-        var isValid = $(this).parent().siblings('form').valid()
-        if (isValid) {
-          alert('Submitted..!!')
+          // validate form
+          $formAccountDetails.validate(Config.validate.formAccountDetails);
+          $formPersonalInfo.validate(Config.validate.formPersonalInfo);
         }
-      })
-  }
+      }
 
-  // select2
-  select.each(function () {
-    var $this = $(this)
-    $this.wrap('<div class="position-relative"></div>')
-    $this.select2({
-      // the following code is used to disable x-scrollbar when click in select input and
-      // take 100% width in responsive also
-      dropdownAutoWidth: true,
-      width: '100%',
-      dropdownParent: $this.parent()
-    })
+      // render server error
+      const displayValidateServer = (xhr) => {
+        let html = ``;
+      } 
+      
+
+      // handle events
+      const handleEvents = () => {
+        // register step 1: account details
+        $btnSubmitAccountDetails.on('click', (e) => {
+          e.preventDefault();
+
+          if ($formAccountDetails.valid()) {
+            $.post(
+              Config.url.registerAccountDetais(),
+              $formAccountDetails.serializeArray(),
+              'json'
+            ).done((res) => {
+              numberedStepper.next();
+            }).fail((xhr) => {
+              Swal.fire({html: renderValidateServerError(xhr), icon: 'error'});
+            });
+          }
+        });
+
+        // register step 2: personal info
+        $btnSubmitPersonalInfo.on('click', (e) => {
+          e.preventDefault();
+
+          if ($formPersonalInfo.valid()) {
+            let formData = new FormData();
+
+            // combine data in two form
+            let allPayload = [
+              ...$formAccountDetails.serializeArray(),
+              ...$formPersonalInfo.serializeArray()
+            ];
+
+            // add data to form data
+            allPayload.forEach((item) => {
+              formData.append(item.name, item.value);
+            });
+
+            // get file 
+            let fileAvatar = $formPersonalInfo.find('#avatar')[0].files;
+            if (fileAvatar.length) {
+              formData.append('avatar', fileAvatar[0]);
+            }
+
+            $.ajax({
+              url: Config.url.registerPersonalInfo(),
+              method: 'POST',
+              dataType: 'JSON',
+              data: formData,
+              cache:false,
+              contentType: false,
+              processData: false
+            }).done((res) => {
+              console.log(res);
+            }).fail((xhr) => {
+              alert(xhr.responseJSON.message);
+            });
+          }
+        });
+      }
+
+
+
+      const init = () => {
+        // init form
+        initForms();
+
+        // handle events
+        handleEvents();
+      }
+
+      return {
+        init: init
+      }
+    })($, window, document);
+
+    RegisterPage.init();
   })
-
-  // credit card
-
-  // Credit Card
-  if (creditCard.length) {
-    creditCard.each(function () {
-      new Cleave($(this), {
-        creditCard: true,
-        onCreditCardTypeChanged: function (type) {
-          const elementNodeList = document.querySelectorAll('.card-type')
-          if (type != '' && type != 'unknown') {
-            //! we accept this approach for multiple credit card masking
-            for (let i = 0; i < elementNodeList.length; i++) {
-              elementNodeList[i].innerHTML =
-                '<img src="' + assetsPath + 'images/icons/payments/' + type + '-cc.png" height="24"/>'
-            }
-          } else {
-            for (let i = 0; i < elementNodeList.length; i++) {
-              elementNodeList[i].innerHTML = ''
-            }
-          }
-        }
-      })
-    })
-  }
-
-  // Expiry Date Mask
-  if (expiryDateMask.length) {
-    new Cleave(expiryDateMask, {
-      date: true,
-      delimiter: '/',
-      datePattern: ['m', 'y']
-    })
-  }
-
-  // CVV
-  if (cvvMask.length) {
-    new Cleave(cvvMask, {
-      numeral: true,
-      numeralPositiveOnly: true
-    })
-  }
-
-  // phone number mask
-  if (mobileNumberMask.length) {
-    new Cleave(mobileNumberMask, {
-      phone: true,
-      phoneRegionCode: 'US'
-    })
-  }
-
-  // Pincode
-  if (pinCodeMask.length) {
-    new Cleave(pinCodeMask, {
-      delimiter: '',
-      numeral: true
-    })
-  }
-
-  // multi-steps registration
-  // --------------------------------------------------------------------
-})
+})($, window, document);

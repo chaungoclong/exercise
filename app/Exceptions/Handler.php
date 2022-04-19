@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Exceptions\NoPermissionException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -35,6 +36,16 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (NoPermissionException $e, $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => $e->getMessage()
+                ], 403);
+            }
+            
+            return abort(403, $e->getMessage());
         });
     }
 }

@@ -37,6 +37,9 @@ data-menu="vertical-menu-modern"
 data-col="blank-page"
 data-framework="laravel"
 data-asset-path="{{ asset('/')}}">
+  <!-- BEGIN: sweet alert laravel-->
+  @include('sweetalert::alert')
+  <!-- END: sweet alert laravel-->
 
   <!-- BEGIN: Content-->
   <div class="app-content content {{ $configData['pageClass'] }}">

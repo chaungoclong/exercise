@@ -1,0 +1,1 @@
+<input {{ $attributes->class(['error' => $errors->has($name ?? '')]) }}>
