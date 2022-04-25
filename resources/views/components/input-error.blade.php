@@ -1,8 +1,7 @@
 @props(['for'])
 
 @error($for)
-	<span {{ $attributes->merge(['class' => 'error']) }}
-		id="{{ str_replace('_', '-', $for) . '-error' }}">
+	<span class="error">
 		{{ $message }}
 	</span>
 @enderror

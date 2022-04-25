@@ -19,7 +19,9 @@ class CreatePermissionRoleTable extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->boolean('is_default')->default(false);
+            $table->boolean('is_user_define')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
 
         // permissions table
@@ -28,17 +30,13 @@ class CreatePermissionRoleTable extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->timestamps();
+            $table->softDeletes();
         });
 
         // pivot table
         Schema::create('permission_role', function (Blueprint $table) {
             $table->integer('role_id')->unsigned();
             $table->integer('permission_id')->unsigned();
-
-            $table->foreign('role_id')->references('id')->on('roles')
-                ->onDelete('cascade');
-            $table->foreign('permission_id')->references('id')->on('permissions')
-                ->onDelete('cascade');
 
             $table->primary(['role_id', 'permission_id']);
         });

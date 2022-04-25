@@ -3,60 +3,87 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\RegisterAccountDetailRequest;
-use App\Http\Requests\RegisterPersonalInfoRequest;
-use App\Services\Auth\AuthService;
+use App\Http\Requests\Auth\RegisterRequest;
+use App\Repositories\Contracts\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
+/**
+ * Overview:
+ * this Controler use for Register new user
+ */
 class RegisterController extends Controller
 {
-    private AuthService $authService;
+    private UserRepository $userRepository;
 
-    public function __construct(AuthService $authService)
+    public function __construct(UserRepository $userRepository)
     {
-        $this->authService = $authService;
+        $this->userRepository = $userRepository;
     }
 
     public function showFormRegister()
     {
-        return view('pages.auth.register');
+        $configData = \Helper::applClasses();
+
+        return view('pages.auth.register', ['configData' => $configData]);
     }
 
-    public function registerAccountDetails(RegisterAccountDetailRequest $request)
+    /**
+     * [register description]
+     * @param  RegisterRequest $request [description]
+     * @return [type]                   [description]
+     */
+    public function register(RegisterRequest $request)
     {
-        return \Jsend::sendSuccess();
-    }
+        $payload = $request->validated();
 
-    //
-    public function registerPersonalInfo(RegisterPersonalInfoRequest $request)
-    {
         try {
-             $user = $this->authService->registerUser($request->all());
-             $redirectTo = route('home');
+            // upload file if exist
+            if ($request->hasFile('avatar')) {
+                $file = $request->file('avatar');
+                $payload['avatar'] = $this->userRepository->uploadAvatar($file);
+            }
+
+            // encode password
+            $payload['password'] = Hash::make($payload['password']);
+
+            $user = $this->userRepository->registerUser($payload);
+
+            return $this->responseSuccess($user);
         } catch (\Exception $e) {
+            Log::error($e);
+
+            return $this->responseFailed();
         }
     }
 
     /**
-     * [redirectIfSuccess description]
+     * response when register success with ajax request
      * @return [type] [description]
      */
-    public function redirectIfSuccess()
+    public function responseSuccess($user)
     {
-        alert()->success('Register successfully');
+        $message = __('action success', ['Action' => 'Đăng ký']);
 
-        return redirect()->route('home');
+        $data = [
+            'user' => $user,
+            'links' => [
+                'redirectTo' => route('login.form')
+            ]
+        ];
+
+        return \Jsend::sendSuccess($message, $data, 201);
     }
 
     /**
-     * [redirectIfFail description]
-     * @param  string $value [description]
-     * @return [type]        [description]
+     * response when register failed with ajax request
+     * @return [type] [description]
      */
-    public function redirectIfFail($value = '')
+    public function responseFailed()
     {
-        alert()->error('Register failed');
+        $message = __('action fail', ['Action' => 'Đăng ký']);
 
-        return redirect()->back()->withInput();
+        return \Jsend::sendError($message, [], 500);
     }
 }

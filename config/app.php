@@ -80,7 +80,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'vi',
 
     /*
     |--------------------------------------------------------------------------
@@ -166,6 +166,7 @@ return [
          * Package Service Providers...
          */
         RealRashid\SweetAlert\SweetAlertServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -233,6 +234,10 @@ return [
         'Helper' => App\Helpers\Helper::class,
         'Jsend' => App\Facades\Support\Jsend::class,
         'Alert' => RealRashid\SweetAlert\Facades\Alert::class,
+        'Debugbar' => Barryvdh\Debugbar\Facades\Debugbar::class,
+        'GenderType' => App\Constants\GenderType::class,
+        'RoleRoot' => App\Constants\RoleRoot::class,
+        'UserStatus' => App\Constants\UserStatus::class,
     ],
 
 ];

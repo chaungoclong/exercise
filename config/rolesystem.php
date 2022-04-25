@@ -12,7 +12,7 @@ return [
 
     // role structure init
     'roles_structure' => [
-        'superadministrator' => [
+        'admin' => [
             'users'         => 'c,r,u,d',
             'projects'      => 'c,r,u,d',
             'reports'       => 'c,r,u,d',

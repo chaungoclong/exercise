@@ -4,7 +4,14 @@
       "url": "home",
       "name": "Home",
       "icon": "home",
-      "slug": "home"
+      "slug": "home",
+      "permission": "users_create"
+    },
+    {
+      "url": "test",
+      "name": "Test",
+      "icon": "home",
+      "slug": "register.form"
     },
     {
       "name": "Page Layouts",

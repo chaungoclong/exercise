@@ -2,26 +2,34 @@
 
 namespace App\Models;
 
+use App\Constants\RoleRoot;
 use App\Models\Permission;
 use App\Models\User;
 use App\Traits\Authorization\HasPermission;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Role extends Model
 {
     use HasFactory,
-        HasPermission;
-
-    // slug of role default
-    public const ADMIN_ROLE_SLUG = 'admin';
-    public const MANAGER_ROLE_SLUG = 'manager';
-    public const EMPLOYEE_ROLE_SLUG = 'employee';
+        HasPermission,
+        SoftDeletes;
 
     protected $fillable = [
         'name',
         'slug',
-        'is_default'
+        'is_default',
+        'is_user_define',
+    ];
+
+    /**
+     * casting
+     * @var [type]
+     */
+    protected $casts = [
+        'is_default'     => 'boolean',
+        'is_user_define' => 'boolean'
     ];
 
     /**
@@ -56,28 +64,45 @@ class Role extends Model
         return $this->where('is_default', true)->first();
     }
 
+    /**
+     * check role is admin
+     * @return boolean [description]
+     */
     public function isAdmin(): bool
     {
-        return ($this->slug === Role::ADMIN_ROLE_SLUG);
+        return ($this->slug === RoleRoot::ADMIN);
     }
 
+    /**
+     * check role is manager
+     * @return boolean [description]
+     */
     public function isManager(): bool
     {
-        return ($this->slug === Role::MANAGER_ROLE_SLUG);
+        return ($this->slug === RoleRoot::MANAGER);
     }
 
+    /**
+     * check role is employee
+     * @return boolean [description]
+     */
     public function isEmployee(): bool
     {
-        return ($this->slug === Role::EMPLOYEE_ROLE_SLUG);
+        return ($this->slug === RoleRoot::EMPLOYEE);
     }
 
-    public function isAminGroup(): bool
+    // check role is admin or manager which is not defined by user
+    public function isAdminGroup(): bool
     {
         return ($this->isAdmin() || $this->isManager());
     }
 
+    /**
+     * check role is employee or other role which is defined by user
+     * @return boolean [description]
+     */
     public function isUserGroup(): bool
     {
-        return !$this->isAminGroup();
+        return !$this->isAdminGroup();
     }
 }

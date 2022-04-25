@@ -39,9 +39,10 @@ class RoleSeeder extends Seeder
         foreach ($config as $slug => $modules) {
             // create new role
             $role = Role::firstOrCreate([
-                'name'       => ucwords(str_replace('_', ' ', $slug)),
-                'slug'       => $slug,
-                'is_default' => ($slug === $roleDefaultSlug)
+                'name'           => ucwords(str_replace('_', ' ', $slug)),
+                'slug'           => $slug,
+                'is_default'     => ($slug === $roleDefaultSlug),
+                'is_user_define' => false
             ]);
 
             $permissions = [];

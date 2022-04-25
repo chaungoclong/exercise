@@ -4,6 +4,9 @@ namespace App\Exceptions;
 
 use App\Exceptions\NoPermissionException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Session\TokenMismatchException;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -47,5 +50,44 @@ class Handler extends ExceptionHandler
             
             return abort(403, $e->getMessage());
         });
+    }
+
+    /**
+     * custom exception
+     * @param  \Throwable $e [description]
+     * @return [type]        [description]
+     */
+    protected function prepareException(\Throwable $e)
+    {
+        if ($e instanceof TokenMismatchException) {
+            $e = new HttpException(419, __('unauthenticated'), $e);
+        }
+
+        return parent::prepareException($e);
+    }
+
+    /**
+     * handling when the user is not authenticated
+     * @param  [Request]                  $request   [description]
+     * @param  AuthenticationException $exception [description]
+     * @return [type]                             [description]
+     */
+    protected function unauthenticated(
+        $request,
+        AuthenticationException $exception
+    ) {
+        if ($request->expectsJson()) {
+            return \Jsend::sendError(
+                __('unauthenticated'),
+                [
+                    'links' => [
+                        'redirectTo' => route('login.form')
+                    ]
+                ],
+                401
+            );
+        }
+
+        return redirect()->guest(route('login.form'));
     }
 }

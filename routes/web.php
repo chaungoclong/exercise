@@ -1,11 +1,10 @@
 <?php
 
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\StaterkitController;
-use App\Models\User;
-use App\Repositories\Contracts\UserRepository;
-use App\Repositories\Eloquent\User\EloquentUserRepository;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [StaterkitController::class, 'home'])->name('home');
-Route::get('home', [StaterkitController::class, 'home'])->name('home')->middleware('auth:api');
+Route::get('home', [StaterkitController::class, 'home'])->name('home')->middleware('auth');
 // Route Components
 Route::get('layouts/collapsed-menu', [StaterkitController::class, 'collapsed_menu'])->name('collapsed-menu');
 Route::get('layouts/full', [StaterkitController::class, 'layout_full'])->name('layout-full');
@@ -32,30 +31,37 @@ Route::get('layouts/blank', [StaterkitController::class, 'layout_blank'])->name(
 // locale Route
 Route::get('lang/{locale}', [LanguageController::class, 'swap']);
 
-Route::get('test', function (UserRepository $user) {
-    return view('pages.auth.register');
-})->name('test');
-
 // BEGIN: Public route
-Route::middleware(['guest'])->prefix('register')->group(function () {
+Route::middleware(['guest'])->group(function () {
     // BEGIN: Register route
-    Route::name('register.')->group(function () {
+    Route::prefix('register')->name('register.')->group(function () {
         // form register
         Route::get('', [RegisterController::class, 'showFormRegister'])
             ->name('form');
 
-        // Register account detail
-        Route::post(
-            'account-details',
-            [RegisterController::class, 'registerAccountDetails']
-        )->name('account_details');
-
-        // Register personal info
-        Route::post(
-            'personal-info',
-            [RegisterController::class, 'registerPersonalInfo']
-        )->name('personal_info');
+        // Register process
+        Route::post('', [RegisterController::class, 'register'])
+            ->name('process');
     });
     // END: Register route
+    
+    // BEGIN: Login route
+    Route::prefix('login')->name('login.')->group(function () {
+        Route::get('', [LoginController::class, 'showFormLogin'])->name('form');
+        Route::post('', [LoginController::class, 'login'])->name('process');
+    });
+    // END: Login route
 });
 // END: Public route
+
+// BEGIN: Private route
+Route::middleware(['auth'])->group(function () {
+    // BEGIN: Logout
+    Route::post('logout', LogoutController::class)->name('logout');
+    // END: Logout
+});
+// END: Private route
+
+Route::get('test', function (Illuminate\Http\Request $request) {
+    dd(\Gate::abilities());
+})->name('register.form');
