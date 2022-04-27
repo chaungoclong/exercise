@@ -3,20 +3,23 @@
 namespace App\Repositories\Contracts;
 
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 
 interface UserRepository
 {
     /**
-     * [registerUser description]
-     * @param  array  $payload [description]
-     * @return [User]          [description]
+     * Register user
+     *
+     * @param array $attributes
+     * @return User
      */
-    public function registerUser(array $payload): User;
+    public function registerUser(array $attributes): User;
 
     /**
      * Upload avatar
-     * @param  [type] $fileUploaded [description]
-     * @return [type]               [description]
+     *
+     * @param UploadedFile $fileUploaded
+     * @return string
      */
-    public function uploadAvatar($fileUploaded): string;
+    public function uploadAvatar(UploadedFile $fileUploaded): string;
 }

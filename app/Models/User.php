@@ -2,11 +2,9 @@
 
 namespace App\Models;
 
-use App\Constants\GenderType;
-use App\Constants\UserStatus;
+
 use App\Models\Role;
 use App\Traits\Authorization\HasRole;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -21,6 +19,18 @@ class User extends Authenticatable
         HasRole,
         HasApiTokens,
         SoftDeletes;
+
+    // Gender
+    public const GENDER_FEMALE = 0;
+    public const GENDER_MALE = 1;
+    public const GENDER_FEMALE_NAME = 'female';
+    public const GENDER_MALE_NAME = 'male';
+
+    // User status
+    public const STATUS_INACTIVE = 0;
+    public const STATUS_ACTIVE = 1;
+    public const STATUS_INACTIVE_NAME = 'inactive';
+    public const STATUS_ACTIVE_NAME = 'active';
 
     /**
      * The attributes that are mass assignable.
@@ -86,12 +96,12 @@ class User extends Authenticatable
     public function getGenderTitleAttribute(): string
     {
         if ($this->gender === null) {
-            return __('other');
+            return '';
         }
 
-        return ($this->gender === GenderType::MALE)
-            ? __(GenderType::MALE_TITLE)
-            : __(GenderType::FEMALE_TITLE);
+        return ($this->gender === User::GENDER_MALE)
+            ? __(User::GENDER_MALE_NAME)
+            : __(User::GENDER_FEMALE_NAME);
     }
 
     /**
@@ -100,9 +110,9 @@ class User extends Authenticatable
      */
     public function getStatusTitleAttribute(): string
     {
-        return ($this->status === UserStatus::ACTIVE)
-            ? __(UserStatus::ACTIVE_TITLE)
-            : __(UserStatus::INACTIVE_TITLE);
+        return ($this->status === User::STATUS_ACTIVE)
+            ? __(User::STATUS_ACTIVE_NAME)
+            : __(User::STATUS_INACTIVE_NAME);
     }
 
     /**
@@ -114,7 +124,13 @@ class User extends Authenticatable
         $this->attributes['birthday'] = Carbon::parse($value)->format('Y-m-d');
     }
 
-    public function getFullNameAttribute()
+
+    /**
+     * Get fullname
+     *
+     * @return string
+     */
+    public function getFullNameAttribute(): string
     {
         return formatName($this->first_name . ' ' . $this->last_name);
     }

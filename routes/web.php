@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\StaterkitController;
+use App\Repositories\Contracts\UserRepository;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -44,7 +45,7 @@ Route::middleware(['guest'])->group(function () {
             ->name('process');
     });
     // END: Register route
-    
+
     // BEGIN: Login route
     Route::prefix('login')->name('login.')->group(function () {
         Route::get('', [LoginController::class, 'showFormLogin'])->name('form');
@@ -62,6 +63,11 @@ Route::middleware(['auth'])->group(function () {
 });
 // END: Private route
 
-Route::get('test', function (Illuminate\Http\Request $request) {
-    dd(\Gate::abilities());
+Route::get('test', function (UserRepository $userRepository) {
+    dd(
+        $userRepository->findAll(),
+        $userRepository->updateById(1, ['username' => 'admin']),
+        $userRepository->restoreById(2),
+        $userRepository->findAll()
+    );
 })->name('register.form');

@@ -16,6 +16,11 @@ class Role extends Model
         HasPermission,
         SoftDeletes;
 
+    // Role Root
+    public const ADMIN = 'admin';
+    public const MANAGER = 'manager';
+    public const EMPLOYEE = 'employee';
+
     protected $fillable = [
         'name',
         'slug',
@@ -70,7 +75,7 @@ class Role extends Model
      */
     public function isAdmin(): bool
     {
-        return ($this->slug === RoleRoot::ADMIN);
+        return ($this->slug === Role::ADMIN);
     }
 
     /**
@@ -79,7 +84,7 @@ class Role extends Model
      */
     public function isManager(): bool
     {
-        return ($this->slug === RoleRoot::MANAGER);
+        return ($this->slug === Role::MANAGER);
     }
 
     /**
@@ -88,7 +93,7 @@ class Role extends Model
      */
     public function isEmployee(): bool
     {
-        return ($this->slug === RoleRoot::EMPLOYEE);
+        return ($this->slug === Role::EMPLOYEE);
     }
 
     // check role is admin or manager which is not defined by user

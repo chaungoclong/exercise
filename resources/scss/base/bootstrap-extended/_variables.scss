@@ -48,22 +48,20 @@ $min-contrast-ratio: 3 !default;
 // You can add more entries to the $spacers map, should you need more variation.
 
 // scss-docs-start container-max-widths
-$grid-breakpoints: (
-  xs: 0,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px,
-  xxl: 1440px // Custom xxl size
+$grid-breakpoints: (xs: 0,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1440px // Custom xxl size
 ) !default;
 
-$container-max-widths: (
-  xs: 0,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px,
-  xxl: 1440px // Custom xxl size
+$container-max-widths: (xs: 0,
+    sm: 576px,
+    md: 768px,
+    lg: 992px,
+    xl: 1200px,
+    xxl: 1440px // Custom xxl size
 ) !default;
 // scss-docs-end container-max-widths
 
@@ -71,36 +69,16 @@ $container-max-widths: (
 $spacer: 1rem !default;
 $spacers: () !default;
 // stylelint-disable-next-line scss/dollar-variable-default
-$spacers: map-merge(
-  (
-    0: 0,
-    25: (
-      $spacer * 0.25
-    ),
-    50: (
-      $spacer * 0.5
-    ),
-    75: (
-      $spacer * 0.75
-    ),
-    1: (
-      $spacer
-    ),
-    2: (
-      $spacer * 1.5
-    ),
-    3: (
-      $spacer * 3
-    ),
-    4: (
-      $spacer * 3.5
-    ),
-    5: (
-      $spacer * 4
-    )
-  ),
-  $spacers
-);
+$spacers: map-merge((0: 0,
+        25: ($spacer * 0.25),
+        50: ($spacer * 0.5),
+        75: ($spacer * 0.75),
+        1: ($spacer),
+        2: ($spacer * 1.5),
+        3: ($spacer * 3),
+        4: ($spacer * 3.5),
+        5: ($spacer * 4)),
+    $spacers);
 
 // Body
 //
@@ -146,8 +124,14 @@ $component-active-bg: $primary !default;
 // Font, line-height, and color for body text, headings, and more.
 
 // stylelint-disable value-keyword-case
-$font-family-sans-serif: 'Montserrat', Helvetica, Arial, serif !default;
-$font-family-monospace: 'Montserrat', Helvetica, Arial, serif !default;
+$font-family-sans-serif: 'Montserrat',
+Helvetica,
+Arial,
+serif !default;
+$font-family-monospace: 'Montserrat',
+Helvetica,
+Arial,
+serif !default;
 
 // stylelint-enable value-keyword-case
 $font-size-base: 1rem !default;
@@ -171,14 +155,12 @@ $h5-font-size: $font-size-base * 1.07 !default;
 $headings-font-family: inherit !default;
 $headings-color: #5e5873 !default;
 
-$display-font-sizes: (
-  1: 6rem,
-  2: 5.5rem,
-  3: 4.5rem,
-  4: 3.5rem,
-  5: 3rem,
-  6: 2.5rem
-) !default;
+$display-font-sizes: (1: 6rem,
+    2: 5.5rem,
+    3: 4.5rem,
+    4: 3.5rem,
+    5: 3rem,
+    6: 2.5rem) !default;
 
 $display-font-weight: $font-weight-normal !default;
 
@@ -251,8 +233,12 @@ $btn-border-radius: 0.358rem !default;
 $btn-border-radius-lg: $btn-border-radius !default;
 $btn-border-radius-sm: $btn-border-radius !default;
 
-$btn-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out,
-  box-shadow 0.15s ease-in-out, background 0s, border 0s !default;
+$btn-transition: color 0.15s ease-in-out,
+background-color 0.15s ease-in-out,
+border-color 0.15s ease-in-out,
+box-shadow 0.15s ease-in-out,
+background 0s,
+border 0s !default;
 
 // Forms
 $form-label-margin-bottom: 0.2857rem !default;
@@ -298,7 +284,7 @@ $input-height-sm: 2.142rem !default;
 $input-height-lg: 3.2857rem !default;
 
 $form-check-input-width: 1.285rem !default;
-$form-check-padding-start: $form-check-input-width + 0.5rem !default;
+$form-check-padding-start: $form-check-input-width+0.5rem !default;
 $form-check-margin-bottom: 0 !default;
 $form-check-label-cursor: pointer !default;
 
@@ -318,14 +304,15 @@ $form-check-input-disabled-opacity: 0.65 !default;
 $form-switch-color: $component-active-color !default;
 $form-switch-width: 3rem !default;
 $form-switch-height: 1.7rem !default; // (c)
-$form-switch-padding-start: $form-switch-width + 0.5rem !default;
-$form-switch-bg-image: url("data:image/svg+xml,<svg width='26px' height='26px' viewBox='0 0 26 27' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><circle id='path-1' cx='8' cy='8' r='8'></circle><filter x='-40.6%' y='-21.9%' width='168.8%' height='168.8%' filterUnits='objectBoundingBox' id='filter-2'><feOffset dx='-1' dy='2' in='SourceAlpha' result='shadowOffsetOuter1'></feOffset><feGaussianBlur stdDeviation='1.5' in='shadowOffsetOuter1' result='shadowBlurOuter1'></feGaussianBlur><feColorMatrix values='0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0' type='matrix' in='shadowBlurOuter1'></feColorMatrix></filter></defs><g id='Artboard' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'><g id='switches-dot' transform='translate(5.000000, 5.000000)' fill-rule='nonzero'><g id='Oval'><use fill='black' fill-opacity='1' filter='url(#filter-2)' xlink:href='#path-1'></use><use fill='#{$form-switch-color}' xlink:href='#path-1'></use></g></g></g></svg>") !default;
-$form-switch-transition: background-position 0.15s ease-in-out, background-color 0.1s ease !default;
+$form-switch-padding-start: $form-switch-width+0.5rem !default;
+$form-switch-bg-image: url("data:image/svg+xml;charset=utf-8,<svg width='26px' height='26px' viewBox='0 0 26 27' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><circle id='path-1' cx='8' cy='8' r='8'></circle><filter x='-40.6%' y='-21.9%' width='168.8%' height='168.8%' filterUnits='objectBoundingBox' id='filter-2'><feOffset dx='-1' dy='2' in='SourceAlpha' result='shadowOffsetOuter1'></feOffset><feGaussianBlur stdDeviation='1.5' in='shadowOffsetOuter1' result='shadowBlurOuter1'></feGaussianBlur><feColorMatrix values='0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0' type='matrix' in='shadowBlurOuter1'></feColorMatrix></filter></defs><g id='Artboard' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'><g id='switches-dot' transform='translate(5.000000, 5.000000)' fill-rule='nonzero'><g id='Oval'><use fill='black' fill-opacity='1' filter='url(#filter-2)' xlink:href='#path-1'></use><use fill='#{$form-switch-color}' xlink:href='#path-1'></use></g></g></g></svg>") !default;
+$form-switch-transition: background-position 0.15s ease-in-out,
+background-color 0.1s ease !default;
 $form-switch-focus-color: $form-switch-color !default;
-$form-switch-focus-bg-image: url("data:image/svg+xml,<svg width='26px' height='26px' viewBox='0 0 26 27' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><circle id='path-1' cx='8' cy='8' r='8'></circle><filter x='-40.6%' y='-21.9%' width='168.8%' height='168.8%' filterUnits='objectBoundingBox' id='filter-2'><feOffset dx='-1' dy='2' in='SourceAlpha' result='shadowOffsetOuter1'></feOffset><feGaussianBlur stdDeviation='1.5' in='shadowOffsetOuter1' result='shadowBlurOuter1'></feGaussianBlur><feColorMatrix values='0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0' type='matrix' in='shadowBlurOuter1'></feColorMatrix></filter></defs><g id='Artboard' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'><g id='switches-dot' transform='translate(5.000000, 5.000000)' fill-rule='nonzero'><g id='Oval'><use fill='black' fill-opacity='1' filter='url(#filter-2)' xlink:href='#path-1'></use><use fill='#{$form-switch-focus-color}' xlink:href='#path-1'></use></g></g></g></svg>") !default;
+$form-switch-focus-bg-image: url("data:image/svg+xml;charset=utf-8,<svg width='26px' height='26px' viewBox='0 0 26 27' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><circle id='path-1' cx='8' cy='8' r='8'></circle><filter x='-40.6%' y='-21.9%' width='168.8%' height='168.8%' filterUnits='objectBoundingBox' id='filter-2'><feOffset dx='-1' dy='2' in='SourceAlpha' result='shadowOffsetOuter1'></feOffset><feGaussianBlur stdDeviation='1.5' in='shadowOffsetOuter1' result='shadowBlurOuter1'></feGaussianBlur><feColorMatrix values='0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0' type='matrix' in='shadowBlurOuter1'></feColorMatrix></filter></defs><g id='Artboard' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'><g id='switches-dot' transform='translate(5.000000, 5.000000)' fill-rule='nonzero'><g id='Oval'><use fill='black' fill-opacity='1' filter='url(#filter-2)' xlink:href='#path-1'></use><use fill='#{$form-switch-focus-color}' xlink:href='#path-1'></use></g></g></g></svg>") !default;
 
 $form-switch-checked-color: $form-switch-color !default;
-$form-switch-checked-bg-image: url("data:image/svg+xml,<svg width='26px' height='26px' viewBox='0 0 26 27' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><circle id='path-1' cx='8' cy='8' r='8'></circle><filter x='-40.6%' y='-21.9%' width='168.8%' height='168.8%' filterUnits='objectBoundingBox' id='filter-2'><feOffset dx='-1' dy='2' in='SourceAlpha' result='shadowOffsetOuter1'></feOffset><feGaussianBlur stdDeviation='1.5' in='shadowOffsetOuter1' result='shadowBlurOuter1'></feGaussianBlur><feColorMatrix values='0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0' type='matrix' in='shadowBlurOuter1'></feColorMatrix></filter></defs><g id='Artboard' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'><g id='switches-dot' transform='translate(5.000000, 5.000000)' fill-rule='nonzero'><g id='Oval'><use fill='black' fill-opacity='1' filter='url(#filter-2)' xlink:href='#path-1'></use><use fill='#{$form-switch-checked-color}' xlink:href='#path-1'></use></g></g></g></svg>") !default;
+$form-switch-checked-bg-image: url("data:image/svg+xml;charset=utf-8,<svg width='26px' height='26px' viewBox='0 0 26 27' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'><defs><circle id='path-1' cx='8' cy='8' r='8'></circle><filter x='-40.6%' y='-21.9%' width='168.8%' height='168.8%' filterUnits='objectBoundingBox' id='filter-2'><feOffset dx='-1' dy='2' in='SourceAlpha' result='shadowOffsetOuter1'></feOffset><feGaussianBlur stdDeviation='1.5' in='shadowOffsetOuter1' result='shadowBlurOuter1'></feGaussianBlur><feColorMatrix values='0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.2 0' type='matrix' in='shadowBlurOuter1'></feColorMatrix></filter></defs><g id='Artboard' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'><g id='switches-dot' transform='translate(5.000000, 5.000000)' fill-rule='nonzero'><g id='Oval'><use fill='black' fill-opacity='1' filter='url(#filter-2)' xlink:href='#path-1'></use><use fill='#{$form-switch-checked-color}' xlink:href='#path-1'></use></g></g></g></svg>") !default;
 
 $switch-bg-color: #e2e2e2 !default; // (c)
 // $switch-indicator-color: $white !default; // (c)
@@ -368,18 +355,12 @@ $form-feedback-icon-invalid-color: $form-feedback-invalid-color !default;
 $form-feedback-icon-invalid: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='#{$form-feedback-icon-invalid-color}'><circle cx='6' cy='6' r='4.5'/><path stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/><circle cx='6' cy='8.2' r='.6' fill='#{$form-feedback-icon-invalid-color}' stroke='none'/></svg>") !default;
 
 // scss-docs-start form-validation-states
-$form-validation-states: (
-  'valid': (
-    'color': $form-feedback-valid-color,
-    'icon': $form-feedback-icon-valid,
-    'tooltip-color': $white
-  ),
-  'invalid': (
-    'color': $form-feedback-invalid-color,
-    'icon': $form-feedback-icon-invalid,
-    'tooltip-color': $white
-  )
-) !default;
+$form-validation-states: ('valid': ('color': $form-feedback-valid-color,
+        'icon': $form-feedback-icon-valid,
+        'tooltip-color': $white),
+    'invalid': ('color': $form-feedback-invalid-color,
+        'icon': $form-feedback-icon-invalid,
+        'tooltip-color': $white)) !default;
 
 // Nav tabs
 
