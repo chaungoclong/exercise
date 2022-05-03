@@ -22,4 +22,19 @@ interface UserRepository
      * @return string
      */
     public function uploadAvatar(UploadedFile $fileUploaded): string;
+
+
+    /**
+     * Change password
+     *
+     * @param User $user
+     * @param string $currentPassword
+     * @param string $newPassword
+     * @return boolean
+     */
+    public function changePassword(
+        User $user,
+        string $currentPassword,
+        string $newPassword
+    ): ?bool;
 }

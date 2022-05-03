@@ -2,9 +2,10 @@
 
 namespace App\Http\Middleware;
 
-use App\Exceptions\NoPermissionException;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use App\Exceptions\NoPermissionException;
 
 class HasAllPermission
 {
@@ -19,8 +20,10 @@ class HasAllPermission
     {
         $permissions = trimStringArray($permissions);
 
-        if (!\Gate::check($permissions)) {
-            throw new NoPermissionException("Permission denied");
+        if (!Gate::check($permissions)) {
+            throw new NoPermissionException(
+                __('Sorry! You are not authorized to perform this action.')
+            );
         }
 
         return $next($request);

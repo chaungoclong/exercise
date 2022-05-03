@@ -2,11 +2,13 @@
 
 namespace App\Repositories\Eloquent\User;
 
+use App\Exceptions\CustomException;
 use App\Models\User;
 use App\Repositories\Contracts\RoleRepository;
 use App\Repositories\Contracts\UserRepository;
 use App\Repositories\Eloquent\EloquentBaseRepository;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Hash;
 
 class EloquentUserRepository extends EloquentBaseRepository implements
     UserRepository
@@ -55,5 +57,26 @@ class EloquentUserRepository extends EloquentBaseRepository implements
         );
 
         return $filePath;
+    }
+
+
+    /**
+     * Change password
+     *
+     * @param User $user
+     * @param string $currentPassword
+     * @param string $newPassword
+     * @return boolean
+     */
+    public function changePassword(
+        User $user,
+        string $currentPassword,
+        string $newPassword
+    ): ?bool {
+        if (!Hash::check($currentPassword, $user->password)) {
+            return null;
+        }
+
+        return $user->update(['password' => Hash::make($newPassword)]);
     }
 }

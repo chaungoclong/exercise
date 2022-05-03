@@ -18,7 +18,9 @@ class HasRole
     public function handle(Request $request, Closure $next, $role)
     {
         if (!auth()->user()->hasRole(trim($role))) {
-            throw new NoPermissionException('permission denied');
+            throw new NoPermissionException(
+                __('Sorry! You are not authorized to perform this action.')
+            );
         }
 
         return $next($request);

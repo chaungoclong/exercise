@@ -1,12 +1,18 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\LogoutController;
-use App\Http\Controllers\Auth\RegisterController;
+namespace App;
+
+use App\Http\Controllers\Auth\ChangePasswordController;
+use App\Models\User;
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\StaterkitController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Repositories\Contracts\UserRepository;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\ProfileController;
+use App\Http\Controllers\Auth\RegisterController;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,8 +25,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [StaterkitController::class, 'home'])->name('home');
-Route::get('home', [StaterkitController::class, 'home'])->name('home')->middleware('auth');
 // Route Components
 Route::get('layouts/collapsed-menu', [StaterkitController::class, 'collapsed_menu'])->name('collapsed-menu');
 Route::get('layouts/full', [StaterkitController::class, 'layout_full'])->name('layout-full');
@@ -56,18 +60,33 @@ Route::middleware(['guest'])->group(function () {
 // END: Public route
 
 // BEGIN: Private route
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'userActive'])->group(function () {
+    Route::get('/', [StaterkitController::class, 'home'])->name('home');
+    Route::get('home', [StaterkitController::class, 'home'])->name('home');
+
     // BEGIN: Logout
     Route::post('logout', LogoutController::class)->name('logout');
     // END: Logout
+
+    // BEGIN: Profile
+    Route::controller(ProfileController::class)
+        ->name('profile.')
+        ->prefix('profile')
+        ->group(function () {
+            // Show profile
+            Route::get('', 'show')->name('show');
+
+            // Update profile
+            Route::put('', 'update')->name('update');
+
+            // Update Avatar
+            Route::post('update-avatar', 'updateAvatar')->name('update_avatar');
+        });
+    // END: Profile
+
+    // BEGIN: Change password
+    Route::patch('change-password', ChangePasswordController::class)
+        ->name('change_password');
+    // END: Change password
 });
 // END: Private route
-
-Route::get('test', function (UserRepository $userRepository) {
-    dd(
-        $userRepository->findAll(),
-        $userRepository->updateById(1, ['username' => 'admin']),
-        $userRepository->restoreById(2),
-        $userRepository->findAll()
-    );
-})->name('register.form');

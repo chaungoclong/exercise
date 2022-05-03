@@ -49,7 +49,11 @@ class StaterkitController extends Controller
     // Empty Layout
     public function layout_empty()
     {
-        $breadcrumbs = [['link' => "home", 'name' => "Home"], ['link' => "javascript:void(0)", 'name' => "Layouts"], ['name' => "Layout Empty"]];
+        $breadcrumbs = [
+            ['link' => "home", 'name' => "Home"],
+            ['link' => "javascript:void(0)", 'name' => "Layouts"],
+            ['name' => "Layout Empty"]
+        ];
         return view('/content/layout-empty', ['breadcrumbs' => $breadcrumbs]);
     }
     // Blank Layout

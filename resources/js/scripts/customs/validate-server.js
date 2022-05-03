@@ -6,81 +6,99 @@
   Author: Châu Ngọc Long
 ==========================================================================================*/
 
-(function($) {
-  $.validator.addMethod('server', function(value, input, url) {
-    /**
-     * generate data from input to send it to server
-     * @return object|formData
-     */
-    const generateData = () => {
-      // if input type is not file
-      if (input.type !== 'file') {
-        let data = {};
-        data[input.name] = value;
+(function ($) {
+    'use strict';
 
-        return data;
-      }
-
-      // if input type is file
-      let formData = new FormData();
-
-      if (input.files.length > 0) {
-        if (input.name.endsWith('[]')) {
-          input.files.forEach((file) => {
-            formData.append(input.name, file);
-          });
-        } else {
-          formData.append(input.name, input.files[0]);
+    $.validator.addMethod('server', function (value, input, _settings = {}) {
+        const settingsDefault = {
+            url: '',
+            method: 'POST',
         }
-      }
 
-      return formData;
-    }
+        const settings = $.extend({}, settingsDefault, _settings);
 
-    /**
-     * check input is valid
-     * @return bool: is input valid
-     */
-    const validate = () => {
-      let isValid = true;
 
-      // option for ajax request
-      let options = {
-        url: url,
-        method: 'POST',
-        data: generateData(),
-        dataType: 'JSON',
-        async: false,
-        statusCode: {
-          422: (xhr) => {
-            if (xhr.status === 422) {
-              let errors = xhr.responseJSON.errors || {};
+        /**
+         * generate data from input to send it to server
+         * @return object|formData
+         */
+        const generateData = () => {
+            // if input type is not file
+            if (input.type !== 'file') {
+                let data = {};
+                data[input.name] = value;
 
-              if (errors[input.name] !== undefined) {
-                isValid = false;
+                let confirmInput = (settings.confirm !== undefined)
+                    ? $(settings.confirm)[0]
+                    : undefined;
 
-                $.validator.messages.server = errors[input.name][0];
-              }
+                if (confirmInput !== undefined && confirmInput.type !== 'file') {
+                    data[confirmInput.name] = confirmInput.value;
+                }
+
+                return data;
             }
-          }
+
+            // if input type is file
+            let formData = new FormData();
+
+            if (input.files.length > 0) {
+                if (input.name.endsWith('[]')) {
+                    input.files.forEach((file) => {
+                        formData.append(input.name, file);
+                    });
+                } else {
+                    formData.append(input.name, input.files[0]);
+                }
+            }
+
+            return formData;
         }
-      };
 
-      // if input type is 'file' disable (processData, cache, contentType)
-      if (input.type === 'file') {
-        options = $.extend(options, {
-          processData: false,
-          cache: false,
-          contentType: false
-        });
-      };
+        /**
+         * check input is valid
+         * @return bool: is input valid
+         */
+        const validate = () => {
+            let isValid = true;
 
-      // send request validate
-      $.ajax(options);
+            // option for ajax request
+            let options = {
+                url: settings.url,
+                method: settings.method,
+                data: generateData(),
+                dataType: 'JSON',
+                async: false,
+                statusCode: {
+                    422: (xhr) => {
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors || {};
 
-      return isValid;
-    }
+                            if (errors[input.name] !== undefined) {
+                                isValid = false;
 
-    return validate();
-  });
+                                $.validator.messages.server = errors[input.name][0];
+                            }
+                        }
+                    }
+                }
+            };
+
+            // if input type is 'file' disable (processData, cache, contentType)
+            if (input.type === 'file') {
+                options = $.extend(options, {
+                    processData: false,
+                    cache: false,
+                    contentType: false
+                });
+            };
+
+            // send request validate
+            $.ajax(options);
+
+            return isValid;
+        }
+
+        return validate();
+    });
 })(jQuery);

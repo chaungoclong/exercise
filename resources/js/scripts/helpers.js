@@ -85,7 +85,34 @@
 //   });
 // })(jQuery);
 
-function createFormData(...$forms)
-{
-	
+/**
+ * Set XCSRF-TOKEN for Ajax Request
+ * @param {*} selector
+ */
+function setToken(selector = 'meta[name="csrf-token"]') {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $(selector).attr('content')
+        }
+    });
 }
+
+// CUSTOM PLUGIN
+(function ($) {
+    /**
+     * Show preview Image for input file
+     */
+    $.fn.showPreviewImage = function ($selectorPreviewImage) {
+        $(this).on('change', function (e) {
+            let file = e.target.files[0];
+            let fileReader = new FileReader();
+            let $previewImage = $($selectorPreviewImage);
+
+            fileReader.addEventListener('load', function (e) {
+                $previewImage.attr('src', e.target.result);
+            });
+
+            fileReader.readAsDataURL(file);
+        });
+    }
+})(jQuery);

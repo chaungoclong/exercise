@@ -46,7 +46,7 @@
     </div>
   @else
     <nav
-      class="header-navbar navbar navbar-expand-lg align-items-center {{ $configData['navbarClass'] }} navbar-light navbar-shadow {{ $configData['navbarColor'] }} {{ $configData['layoutWidth'] === 'boxed' && $configData['verticalMenuNavbarType'] === 'navbar-floating' ? 'container-xxl' : '' }}">
+      class="header-navbar navbar navbar-expand-lg align-items-center {{ $configData['navbarClass'] }} navbar-light navbar-shadow {{ $configData['navbarColor'] }} {{ $configData['layoutWidth'] === 'boxed' && $configData['verticalMenuNavbarType'] === 'navbar-floating'? 'container-xxl': '' }}">
 @endif
 <div class="navbar-container d-flex content">
   <div class="bookmark-wrapper d-flex align-items-center">
@@ -103,11 +103,9 @@
         </div>
         <span class="avatar">
           <img class="round"
-            src="{{ 
-              (Auth::user() && Auth::user()->avatar) 
-                ? Auth::user()->avatar 
-                : 'https://haycafe.vn/wp-content/uploads/2022/02/Anh-gai-xinh-cap-2-3.jpg' 
-            }}"
+            src="{{ Auth::user() && Auth::user()->avatar
+                ? Auth::user()->avatar
+                : 'https://haycafe.vn/wp-content/uploads/2022/02/Anh-gai-xinh-cap-2-3.jpg' }}"
             alt="avatar" height="40" width="40">
           <span class="avatar-status-online"></span>
         </span>

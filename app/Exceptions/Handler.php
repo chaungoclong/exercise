@@ -3,10 +3,15 @@
 namespace App\Exceptions;
 
 use App\Exceptions\NoPermissionException;
+use App\Facades\Support\Jsend;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Auth\AuthenticationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Session\TokenMismatchException;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -38,17 +43,17 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            //
+            // report($e);
         });
 
+        // Global handle NoPermisisonException
         $this->renderable(function (NoPermissionException $e, $request) {
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => $e->getMessage()
-                ], 403);
-            }
-            
-            return abort(403, $e->getMessage());
+            // if ($request->expectsJson()) {
+            //     return Jsend::sendError($e->getMessage(), [], 403);
+            // }
+
+            // return abort(403, $e->getMessage());
+            throw new AccessDeniedHttpException($e->getMessage(), $e);
         });
     }
 
@@ -59,8 +64,22 @@ class Handler extends ExceptionHandler
      */
     protected function prepareException(\Throwable $e)
     {
+        // Global handle for miss match csrf token
         if ($e instanceof TokenMismatchException) {
-            $e = new HttpException(419, __('unauthenticated'), $e);
+            $e = new HttpException(
+                419,
+                __('Sorry, your session has expired.'),
+                $e
+            );
+        }
+
+        // Global handle ModelNotFoundException
+        if ($e instanceof ModelNotFoundException) {
+            $model = explode('\\', $e->getModel());
+            $modelName = __(end($model));
+            $message = __(':Name Not Found', ['Name' => $modelName]);
+
+            $e = new NotFoundHttpException($message, $e);
         }
 
         return parent::prepareException($e);
@@ -77,8 +96,8 @@ class Handler extends ExceptionHandler
         AuthenticationException $exception
     ) {
         if ($request->expectsJson()) {
-            return \Jsend::sendError(
-                __('unauthenticated'),
+            return Jsend::sendError(
+                __('You are not logged in'),
                 [
                     'links' => [
                         'redirectTo' => route('login.form')

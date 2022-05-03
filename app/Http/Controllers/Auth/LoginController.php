@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Exceptions\NoPermissionException;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\Auth\LoginRequest;
+use App\Exceptions\NoPermissionException;
 
 class LoginController extends Controller
 {
@@ -24,7 +25,7 @@ class LoginController extends Controller
         $credentials = $request->validated();
         $remember    = $request->has('remember');
 
-        if (!\Auth::attempt($credentials, $remember)) {
+        if (!Auth::attempt($credentials, $remember)) {
             return $this->loginFailed();
         }
 
@@ -49,7 +50,7 @@ class LoginController extends Controller
     {
         session()->regenerate();
 
-        toast()->success(__('action success', ['Action' => 'Đăng nhập']))
+        toast()->success(__('Login success'))
             ->width('350px')
             ->position('top-end')
             ->timerProgressBar();
@@ -64,7 +65,7 @@ class LoginController extends Controller
      */
     public function loginFailed()
     {
-        toast()->error(__('auth.failed'))
+        toast()->error(__('Login information is incorrect'))
             ->position('top-end')
             ->width('350px')
             ->timerProgressBar();

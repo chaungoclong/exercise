@@ -115,13 +115,24 @@ class User extends Authenticatable
             : __(User::STATUS_INACTIVE_NAME);
     }
 
+
     /**
      * convert date to 'Y-m-d' before save
-     * @param [type] $value [description]
+     * @param string $value [description]
      */
     public function setBirthdayAttribute($value)
     {
         $this->attributes['birthday'] = Carbon::parse($value)->format('Y-m-d');
+    }
+
+    /**
+     * convert date to 'd-m-Y' before get
+     *
+     * @param string $value
+     */
+    public function getBirthdayAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
     }
 
 
@@ -133,5 +144,32 @@ class User extends Authenticatable
     public function getFullNameAttribute(): string
     {
         return formatName($this->first_name . ' ' . $this->last_name);
+    }
+
+
+    // Check User'Role
+    public function isAdmin(): bool
+    {
+        return (bool) (optional($this->role)->isAdmin());
+    }
+
+    public function isManager(): bool
+    {
+        return (bool) (optional($this->role)->isManager());
+    }
+
+    public function isEmployee(): bool
+    {
+        return (bool) (optional($this->role)->isEmployee());
+    }
+
+    public function isAdminGroup(): bool
+    {
+        return (bool) (optional($this->role)->isAdminGroup());
+    }
+
+    public function isUserGroup()
+    {
+        return (bool) (optional($this->role)->isUserGroup());
     }
 }

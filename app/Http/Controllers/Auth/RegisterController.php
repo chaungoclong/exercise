@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Facades\Support\Jsend;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Repositories\Contracts\UserRepository;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Hash;
 
 /**
  * Overview:
@@ -24,7 +24,7 @@ class RegisterController extends Controller
 
     public function showFormRegister()
     {
-        $configData = \Helper::applClasses();
+        $configData = \App\Helpers\Helper::applClasses();
 
         return view('pages.auth.register', ['configData' => $configData]);
     }
@@ -64,7 +64,7 @@ class RegisterController extends Controller
      */
     public function responseSuccess($user)
     {
-        $message = __('action success', ['Action' => 'Đăng ký']);
+        $message = __('Register success');
 
         $data = [
             'user' => $user,
@@ -73,7 +73,7 @@ class RegisterController extends Controller
             ]
         ];
 
-        return \Jsend::sendSuccess($message, $data, 201);
+        return Jsend::sendSuccess($message, $data, 201);
     }
 
     /**
@@ -82,8 +82,8 @@ class RegisterController extends Controller
      */
     public function responseFailed()
     {
-        $message = __('action fail', ['Action' => 'Đăng ký']);
+        $message = __('Register failed');
 
-        return \Jsend::sendError($message, [], 500);
+        return Jsend::sendError($message, [], 500);
     }
 }

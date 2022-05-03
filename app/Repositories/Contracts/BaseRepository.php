@@ -42,7 +42,8 @@ interface BaseRepository
      */
     public function findById(
         int|string $modelId,
-        array $relations = []
+        array $relations = [],
+        array $append = []
     ): ?Model;
 
 

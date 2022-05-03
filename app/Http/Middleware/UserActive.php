@@ -18,9 +18,11 @@ class UserActive
     public function handle(Request $request, Closure $next)
     {
         if (!auth()->user()->isActive()) {
-            throw new NoPermissionException('permission denied');
+            throw new NoPermissionException(
+                __('This account is inactive.')
+            );
         }
-        
+
         return $next($request);
     }
 }

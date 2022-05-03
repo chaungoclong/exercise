@@ -59,9 +59,13 @@ abstract class EloquentBaseRepository implements BaseRepository
      */
     public function findById(
         int|string $modelId,
-        array $relations = []
+        array $relations = [],
+        array $append = []
     ): ?Model {
-        return $this->model->with($relations)->findOrFail($modelId);
+        return $this->model
+            ->with($relations)
+            ->findOrFail($modelId)
+            ->append($append);
     }
 
 

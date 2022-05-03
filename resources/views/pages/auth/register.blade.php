@@ -209,8 +209,6 @@
 @push('vendor-script')
   <script src="{{ asset(mix('vendors/js/pickers/flatpickr/flatpickr.min.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/forms/wizard/bs-stepper.min.js')) }}"></script>
-  <script src="{{ asset(mix('vendors/js/forms/cleave/cleave.min.js')) }}"></script>
-  <script src="{{ asset(mix('vendors/js/forms/cleave/addons/cleave-phone.us.js')) }}"></script>
 @endpush
 
 @push('page-script')
