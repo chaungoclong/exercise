@@ -6,6 +6,7 @@ use App\Constants\RoleRoot;
 use App\Models\Permission;
 use App\Models\User;
 use App\Traits\Authorization\HasPermission;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -110,4 +111,53 @@ class Role extends Model
     {
         return !$this->isAdminGroup();
     }
+
+    /**
+     * Get list Role for Index page
+     *
+     * @return Collection
+     */
+    public function getListIndex(): Collection
+    {
+        return $this->with('users')
+            ->withCount('users')
+            ->orderBy('created_at')
+            ->get();
+    }
+
+
+    /**
+     * Find by Id include Role soft deteted
+     *
+     * @param integer|string $id
+     * @return Role|null
+     */
+    public function findWithTrashed(int|string $id): ?Role
+    {
+        return $this->withTrashed()->findOrFail($id);
+    }
+
+
+    /**
+     * Find by Id only Role soft deleted
+     *
+     * @param integer|string $id
+     * @return Role|null
+     */
+    public function findOnlyTrashed(int|string $id): ?Role
+    {
+        return $this->onlyTrashed()->findOrFail($id);
+    }
+
+    // /**
+    //  * The "booted" method of the model.
+    //  *
+    //  * @return void
+    //  */
+    // protected static function booted()
+    // {
+    //     static::deleting(function ($role) {
+    //         $role->permissions()->detach();
+    //     });
+    // }
 }

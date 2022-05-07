@@ -73,6 +73,7 @@
 
 @section('vendor-script')
   <script src="{{ asset(mix('vendors/js/forms/validation/jquery.validate.min.js')) }}"></script>
+  <script src="{{ asset(mix('vendors/js/forms/validation/additional-methods.min.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/extensions/sweetalert2.all.min.js')) }}"></script>
   <script src="{{ asset(mix('vendors/js/forms/cleave/cleave.min.js')) }}"></script>
   <!-- BEGIN: push vendor script -->

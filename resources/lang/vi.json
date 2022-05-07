@@ -736,5 +736,12 @@
     "Current password does not match": "Mật khẩu hiện tại không khớp",
     ":Name Not Found": "Không tìm thấy :Name",
     "Upload avatar failed": "Tải ảnh đại diện lên không thành công",
-    "Upload avatar success": "Tải ảnh đại diện lên thành công"
+    "Upload avatar success": "Tải ảnh đại diện lên thành công",
+    "Roles & Permission": "Vai trò & Quyền",
+    "Roles": "Vai trò",
+    "Permission": "Quyền",
+    "Create Role success": "Thêm Vai trò thành công",
+    "Create Role failed": "Thêm Vai trò không thành công",
+    "Update Role success": "Sửa Vai trò thành công",
+    "Update Role failed": "Sửa Vai trò thành công"
 }

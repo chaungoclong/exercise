@@ -12,7 +12,7 @@ trait HasPermission
      * @param  [type] $keys [description]
      * @return [type]       [description]
      */
-    public function attachPermission(...$keys) : bool
+    public function attachPermission(...$keys): bool
     {
         try {
             $listPermissions = $this->getPermissionsExistInKeys($keys);
@@ -30,7 +30,7 @@ trait HasPermission
      * @param  [type] $keys [description]
      * @return [type]       [description]
      */
-    public function syncPermission(...$keys) : bool
+    public function syncPermission(...$keys): bool
     {
         try {
             $listPermissions = $this->getPermissionsExistInKeys($keys);
@@ -48,16 +48,18 @@ trait HasPermission
      * @param  [Collection|Model|string|integer] $key
      * @return [Permission|null]
      */
-    public function getPermissionByKey($key) : ? Permission
+    public function getPermissionByKey($key): ?Permission
     {
         // find by 'id' if type of $key is 'integer'
         if (is_int($key)) {
             return Permission::find($key);
         }
 
-        // find by 'slug' if type of $key is 'string'
+        // find by 'slug' or 'id' if type of $key is 'string'
         if (is_string($key)) {
-            return Permission::where('slug', $key)->first();
+            return Permission::where('id', $key)
+                ->orWhere('slug', $key)
+                ->first();
         }
 
         // return 'null' if type of $key is not 'Permission'
@@ -96,7 +98,7 @@ trait HasPermission
      * @param  [type]  $key [description]
      * @return boolean      [description]
      */
-    public function hasPermission($key) : bool
+    public function hasPermission($key): bool
     {
         $permission = $this->getPermissionByKey($key);
 
@@ -112,7 +114,7 @@ trait HasPermission
      * @param  [type]  $keys [description]
      * @return boolean       [description]
      */
-    public function hasAllPermission(...$keys) : bool
+    public function hasAllPermission(...$keys): bool
     {
         $keys = collect($keys)->flatten();
 
@@ -130,7 +132,7 @@ trait HasPermission
      * @param  [type]  $keys [description]
      * @return boolean       [description]
      */
-    public function hasAnyPermission(...$keys) : bool
+    public function hasAnyPermission(...$keys): bool
     {
         $keys = collect($keys)->flatten();
 

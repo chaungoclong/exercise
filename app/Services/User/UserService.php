@@ -2,44 +2,77 @@
 
 namespace App\Services\User;
 
-use App\Models\Role;
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 
-/**
- *
- */
+use App\Models\User;
+use Yajra\DataTables\Facades\DataTables;
+
 class UserService
 {
     private User $userModel;
-    private Role $roleModel;
-    
-    public function __construct(Role $roleModel, User $userModel)
+
+    public function __construct(User $userModel)
     {
-        $this->roleModel = $roleModel;
         $this->userModel = $userModel;
     }
 
     /**
-     * [createUser description]
-     * @param  array  $payload [description]
-     * @return [type]          [description]
+     * Get User Datatables
+     *
+     * @return void
      */
-    public function createUser(array $payload): User
+    public function userDatatables()
     {
-        // upload avatar
-        if (!empty($payload['avatar'])) {
-            $file = $payload['avatar'];
-            $filePath = asset('storage/' . $file->store('avatar', 'public'));
-            $payload['avatar'] = $filePath;
-        }
+        $model = $this->userModel->with('role');
 
-        $payload['password'] = Hash::make($payload['password']);
+        return DataTables::of($model)
+            ->addIndexColumn()
+            ->addColumn('card', function ($user) {
+                return '
+                    <div class="card col-3">
+                        <div class="card-body">
+                            <h1>' . $user->email . '</h1>
+                        </div>
+                    </div>
+                ';
+            })
+            ->addColumn('fullname', function ($user) {
+                return  '<div class="d-flex justify-content-left align-items-center"><div class="avatar-wrapper"><div class="avatar  me-1"><img src="' .
+                    ($user->avatar ?? '') .
+                    '" alt="Avatar" height="32" width="32"></div></div><div class="d-flex flex-column"><a href="http://127.0.0.1:8000/app/user/view/account" class="user_name text-body text-truncate"><span class="fw-bolder">' .
+                    $user->full_name
+                    . '</span></a><small class="emp_post text-muted">' . $user->email . '</small></div></div>';
+            })
+            ->filter(function ($query) {
+                if (request()->has('role_id')) {
+                    $query->where('role_id', request('role_id'));
+                }
 
-        try {
-            return $this->userModel->create($payload);
-        } catch (\Exception $e) {
-            throw $e;
-        }
+                if (request()->has('key')) {
+                    // dd(request()->all());
+                    $key = request('key');
+
+                    $query
+                        ->where('first_name', 'LIKE', "%$key%")
+                        ->orWhere('last_name', 'LIKE', "%$key)%")
+                        ->orWhere('email', 'LIKE', "%$key%");
+                }
+
+                if (request()->has('sort')) {
+                    switch (request('sort')) {
+                        case '2':
+                            $query->orderBy('created_at', 'desc');
+                        case '3':
+                            $query->orderBy('first_name', 'asc');
+                        case '4':
+                            $query->orderBy('first_name', 'desc');
+                        case '1':
+                        default:
+                            $query->orderBy('created_at', 'asc');
+                            break;
+                    }
+                }
+            }, true)
+            ->rawColumns(['fullname', 'card'])
+            ->make(true);
     }
 }

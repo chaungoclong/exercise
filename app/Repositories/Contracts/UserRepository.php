@@ -5,7 +5,7 @@ namespace App\Repositories\Contracts;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 
-interface UserRepository
+interface UserRepository extends BaseRepository
 {
     /**
      * Register user

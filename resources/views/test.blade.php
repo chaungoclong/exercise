@@ -1,65 +1,125 @@
 @extends('layouts.customs.app')
 
-@section('title', 'Home')
+@section('title', 'Manage Roles')
+
+@push('vendor-style')
+<!-- Vendor css files -->
+<link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap5.min.css')) }}">
+<link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/responsive.bootstrap5.min.css')) }}">
+<link rel="stylesheet" href="{{ asset(mix('vendors/css/tables/datatable/buttons.bootstrap5.min.css')) }}">
+<link rel="stylesheet" href="{{ asset(mix('vendors/css/forms/select/select2.min.css')) }}">
+@endpush
+
+@push('page-style')
+<link rel="stylesheet" href="{{ asset(mix('css/base/plugins/forms/form-validation.css')) }}">
+@endpush
 
 @section('content')
-<!-- Kick start -->
-<div class="card">
-  <div class="card-header">
-    <h4 class="card-title">Kick start your next project 🚀</h4>
-  </div>
-  <div class="card-body">
-    <div class="card-text">
-      <p>
-        <i class="fas fa-user"></i>
-        Getting start with your project custom requirements using a ready template which is quite difficult and time
-        taking process, Vuexy Admin provides useful features to kick start your project development with no efforts !
-      </p>
-      <ul>
-        <li>
-          Vuexy Admin provides you getting start pages with different layouts, use the layout as per your custom
-          requirements and just change the branding, menu &amp; content.
-        </li>
-        <li>
-          Every components in Vuexy Admin are decoupled, it means use use only components you actually need! Remove
-          unnecessary and extra code easily just by excluding the path to specific SCSS, JS file.
-        </li>
-      </ul>
-    </div>
-  </div>
-</div>
-<!--/ Kick start -->
+<div class="">
+    <div class="card d-flex flex-row justify-content-between container py-1">
+        <button id="test" class="btn btn-info" style="width: 100px;">Test</button>
 
-<!-- Page layout -->
-<div class="card">
-  <div class="card-header">
-    <h4 class="card-title">What is page layout?</h4>
-  </div>
-  <div class="card-body">
-    <div class="card-text">
-      <p>
-        Starter kit includes pages with different layouts, useful for your next project to start development process
-        from scratch with no time.
-      </p>
-      <ul>
-        <li>Each layout includes required only assets only.</li>
-        <li>
-          Select your choice of layout from starter kit, customize it with optional changes like colors and branding,
-          add required dependency only.
-        </li>
-      </ul>
-      <div class="alert alert-primary" role="alert">
-        <div class="alert-body">
-          <strong>Info:</strong> Please check the &nbsp;<a
-            class="text-primary"
-            href="https://pixinvent.com/demo/vuexy-html-bootstrap-admin-template/documentation/documentation-layouts.html#layout-collapsed-menu"
-            target="_blank"
-            >Layout documentation</a
-          >&nbsp; for more layout options i.e collapsed menu, without menu, empty & blank.
+        <div class="btn-group">
+            <button class="btn btn-outline-info dropdown-toggle" type="button" id="sortBtn" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Sort
+            </button>
+            <input type="hidden" name="sort_type" value="1">
+
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li>
+                    <a class="dropdown-item sort-item" data-sort="{{ config('constants.sort.latest') }}" href="#">Latest
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item sort-item" data-sort="{{ config('constants.sort.oldest') }}" href="#">
+                        Oldest
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item sort-item" data-sort="{{ config('constants.sort.a-z') }}" href="#">
+                        A-Z
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item sort-item" data-sort="{{ config('constants.sort.z-a') }}" href="#">
+                        Z-A
+                    </a>
+                </li>
+            </ul>
         </div>
-      </div>
+
+        <button id="add" class="btn btn-info" style="width: 100px;">Add</button>
     </div>
-  </div>
+
+    <table id="example" class="display" style="display: none;" cellspacing="0" width="100%"></table>
+    <div id="new-list" class="row my-1" style="display: none;"></div>
 </div>
-<!--/ Page layout -->
 @endsection
+
+@push('vendor-script')
+<script src="{{ asset(mix('vendors/js/tables/datatable/jquery.dataTables.min.js')) }}"></script>
+<script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.bootstrap5.min.js')) }}"></script>
+<script src="{{ asset(mix('vendors/js/tables/datatable/dataTables.responsive.min.js')) }}"></script>
+<script src="{{ asset(mix('vendors/js/tables/datatable/responsive.bootstrap5.js')) }}"></script>
+<script src="{{ asset(mix('vendors/js/tables/datatable/datatables.buttons.min.js')) }}"></script>
+<script src="{{ asset(mix('vendors/js/tables/datatable/buttons.bootstrap5.min.js')) }}"></script>
+<script src="{{ asset(mix('vendors/js/tables/datatable/datatables.checkboxes.min.js')) }}"></script>
+<script src="{{ asset(mix('vendors/js/forms/select/select2.full.min.js')) }}"></script>
+@endpush
+
+@push('page-script')
+<script>
+    $(function() {
+      let table = $('#example').DataTable({
+        processing: true,
+        serverSide: true,
+        stateSave: true,
+        ajax: {
+          url: '{{ route('roles.userdatatables') }}',
+          data: (d) => {
+            d.search = $('#example_filter input').val();
+            d.sort = $('[name="sort_type"]').val();
+          }
+        },
+        columns: [{
+          data: 'html'
+        }],
+        "initComplete": function(settings, json) {
+          // show new container for data
+          $('#new-list').insertBefore('#example');
+          //   alert('here');
+          $('#new-list').show();
+        },
+        "rowCallback": function(row, role) {
+          let $roleCard = $();
+
+          $('#new-list').append(role.html);
+        },
+        "preDrawCallback": function(settings) {
+          // clear list before draw
+          $('#new-list').empty();
+        }
+      });
+
+      $('#test').on('click', function() {
+        console.log(table);
+        table.ajax.reload(null, false);
+      });
+
+      $('#example_filter input').on('keyup', function() {
+        console.log(table);
+        table.ajax.reload();
+      });
+
+      $('.sort-item').on('click', function() {
+        $('[name="sort_type"]').val($(this).data('sort'));
+        $('#sortBtn').text($(this).text());
+        table.ajax.reload();
+      });
+    });
+</script>
+@endpush

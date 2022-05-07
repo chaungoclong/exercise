@@ -55,6 +55,14 @@ class Handler extends ExceptionHandler
             // return abort(403, $e->getMessage());
             throw new AccessDeniedHttpException($e->getMessage(), $e);
         });
+
+        $this->renderable(function (FailException $e, $request) {
+            if ($request->ajax()) {
+                throw new HttpException(400, $e->getMessage());
+            }
+
+            return abort(400, $e->getMessage());
+        });
     }
 
     /**
@@ -81,6 +89,7 @@ class Handler extends ExceptionHandler
 
             $e = new NotFoundHttpException($message, $e);
         }
+
 
         return parent::prepareException($e);
     }

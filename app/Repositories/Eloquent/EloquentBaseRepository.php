@@ -19,11 +19,15 @@ abstract class EloquentBaseRepository implements BaseRepository
      * Find all models except soft deleted models
      *
      * @param array $relations
+     * @param array $counts
      * @return Collection
      */
-    public function findAll(array $relations = []): Collection
+    public function findAll(array $relations = [], array $counts = []): Collection
     {
-        return $this->model->with($relations)->get();
+        return $this->model
+            ->with($relations)
+            ->withCount($counts)
+            ->get();
     }
 
 
@@ -31,11 +35,18 @@ abstract class EloquentBaseRepository implements BaseRepository
      * Find all models including soft deleted models
      *
      * @param array $relations
+     * @param array $counts
      * @return Collection
      */
-    public function findAllWithTrashed(array $relations = []): Collection
-    {
-        return $this->model->withTrashed()->with($relations)->get();
+    public function findAllWithTrashed(
+        array $relations = [],
+        array $counts = []
+    ): Collection {
+        return $this->model
+            ->withTrashed()
+            ->with($relations)
+            ->withCount($counts)
+            ->get();
     }
 
 
@@ -43,63 +54,89 @@ abstract class EloquentBaseRepository implements BaseRepository
      * Find all soft deleted models
      *
      * @param array $relations
+     * @param array $counts
      * @return Collection
      */
-    public function findAllOnlyTrashed(array $relations = []): Collection
-    {
-        return $this->model->onlyTrashed()->with($relations)->get();
+    public function findAllOnlyTrashed(
+        array $relations = [],
+        array $counts = []
+    ): Collection {
+        return $this->model
+            ->onlyTrashed()
+            ->with($relations)
+            ->withCount($counts)
+            ->get();
     }
 
 
     /**
      * Find model by id except soft deleted models
      *
+     * @param integer|string $modelId
      * @param array $relations
-     * @return Collection
+     * @param array $counts
+     * @param array $appends
+     * @return Model|null
      */
     public function findById(
         int|string $modelId,
         array $relations = [],
-        array $append = []
+        array $counts = [],
+        array $appends = []
     ): ?Model {
         return $this->model
             ->with($relations)
+            ->withCount($counts)
             ->findOrFail($modelId)
-            ->append($append);
+            ->append($appends);
     }
 
 
     /**
      * Find model by id including soft deleted models
      *
+     * @param integer|string $modelId
      * @param array $relations
-     * @return Collection
+     * @param array $counts
+     * @param array $appends
+     * @return Model|null
      */
     public function findByIdWithTrashed(
         int|string $modelId,
-        array $relations = []
+        array $relations = [],
+        array $counts = [],
+        array $appends = []
     ): ?Model {
         return $this->model
             ->withTrashed()
             ->with($relations)
-            ->findOrFail($modelId);
+            ->withCount($counts)
+            ->findOrFail($modelId)
+            ->append($appends);
     }
 
 
     /**
      * Find soft deleted model by id
      *
+     * @param integer|string $modelId
      * @param array $relations
-     * @return Collection
+     * @param array $counts
+     * @param array $appends
+     * @return Model|null
      */
     public function findByIdOnlyTrashed(
         int|string $modelId,
-        array $relations = []
+        array $relations = [],
+        array $counts = [],
+        array $appends = []
     ): ?Model {
         return $this->model
             ->onlyTrashed()
             ->with($relations)
-            ->findOrFail($modelId);
+            ->withCount($counts)
+            ->findOrFail($modelId)
+            ->append($appends);
     }
 
 
@@ -116,107 +153,74 @@ abstract class EloquentBaseRepository implements BaseRepository
 
 
     /**
-     * Update model by id
+     * Update by Id or Model
      *
-     * @param integer|string $modelId
+     * @param integer|string|Model $key
      * @param array $attributes
      * @return boolean
      */
-    public function updateById(int|string $modelId, array $attributes): bool
+    public function update(int|string|Model $key, array $attributes): bool
     {
-        $model = $this->findById($modelId);
+        if ($key instanceof Model) {
+            return $key->update($attributes);
+        }
+
+        $model = $this->findById($key);
 
         return $model->update($attributes);
     }
 
 
     /**
-     * Update model by Model (when use Route Model Binding)
+     * Delete by Id Or Model
      *
-     * @param integer|string $modelId
-     * @param array $attributes
+     * @param integer|string|Model $key
      * @return boolean
      */
-    public function updateByModel(Model $model, array $attributes): bool
+    public function delete(int|string|Model $key): bool
     {
-        return $model->update($attributes);
-    }
+        if ($key instanceof Model) {
+            return $key->delete();
+        }
 
-
-    /**
-     * Delete model by id
-     *
-     * @param integer|string $modelId
-     * @return boolean
-     */
-    public function deleteById(int|string $modelId): bool
-    {
-        $model = $this->findById($modelId);
+        $model = $this->findById($key);
 
         return $model->delete();
     }
 
 
     /**
-     * Delete model by id
+     * Force delete by Id or Model
      *
-     * @param integer|string $modelId
+     * @param integer|string|Model $key
      * @return boolean
      */
-    public function deleteByModel(Model $model): bool
+    public function forceDelete(int|string|Model $key): bool
     {
-        return $model->delete();
-    }
+        if ($key instanceof Model) {
+            return $key->forceDelete();
+        }
 
-
-    /**
-     * Force delete model by id
-     *
-     * @param integer|string $modelId
-     * @return boolean
-     */
-    public function forceDeleteById(int|string $modelId): bool
-    {
-        $model = $this->findByIdWithTrashed($modelId);
+        $model = $this->findByIdWithTrashed($key);
 
         return $model->forceDelete();
     }
 
 
     /**
-     * Force delete model by model
+     * Restore by Id or Model
      *
-     * @param integer|string $modelId
+     * @param integer|string|Model $key
      * @return boolean
      */
-    public function forceDeleteByModel(Model $model): bool
+    public function restore(int|string|Model $key): bool
     {
-        return $model->forceDelete();
-    }
+        if ($key instanceof Model) {
+            return $key->restore();
+        }
 
+        $model = $this->findByIdOnlyTrashed($key);
 
-    /**
-     * Restore model by id
-     *
-     * @param integer|string $modelId
-     * @return boolean
-     */
-    public function restoreById(int|string $modelId): bool
-    {
-        $model = $this->findByIdOnlyTrashed($modelId);
-
-        return $model->restore();
-    }
-
-
-    /**
-     * Restore model by model
-     *
-     * @param integer|string $modelId
-     * @return boolean
-     */
-    public function restoreByModel(Model $model): bool
-    {
         return $model->restore();
     }
 }

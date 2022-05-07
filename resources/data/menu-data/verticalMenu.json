@@ -1,56 +1,77 @@
 {
-  "menu": [
-    {
-      "url": "home",
-      "name": "Home",
-      "icon": "home",
-      "slug": "home",
-      "permission": "users_create"
-    },
-    {
-      "url": "test",
-      "name": "Test",
-      "icon": "home",
-      "slug": "register.form"
-    },
-    {
-      "name": "Page Layouts",
-      "icon": "mail",
-      "slug": "",
-      "badge": "5",
-      "badgeClass": "badge rounded-pill badge-light-danger ms-auto me-1",
-      "submenu": [
+    "menu": [
         {
-          "url": "layouts/collapsed-menu",
-          "name": "Collapsed Menu",
-          "icon": "circle",
-          "slug": "collapsed-menu"
+            "url": "home",
+            "name": "Home",
+            "icon": "home",
+            "slug": "home"
         },
         {
-          "url": "layouts/full",
-          "name": "Layout Full",
-          "icon": "circle",
-          "slug": "layout-full"
+            "url": "test",
+            "name": "Test",
+            "icon": "home",
+            "slug": "register.form"
         },
         {
-          "url": "layouts/without-menu",
-          "name": "Without Menu",
-          "icon": "circle",
-          "slug": "without-menu"
+            "name": "Roles & Permission",
+            "icon": "shield",
+            "slug": "",
+            "permission": "roles_read,permissions_read",
+            "submenu": [
+                {
+                    "url": "roles",
+                    "name": "Roles",
+                    "icon": "circle",
+                    "slug": "roles.index",
+                    "permission": "roles_read"
+                },
+                {
+                    "url": "permissions",
+                    "name": "Permission",
+                    "icon": "circle",
+                    "slug": "permissions.index",
+                    "permission": "roles_read"
+                }
+            ]
         },
         {
-          "url": "layouts/empty",
-          "name": "Layout Empty",
-          "icon": "circle",
-          "slug": "layout-empty"
-        },
-        {
-          "url": "layouts/blank",
-          "name": "Layout Blank",
-          "icon": "circle",
-          "slug": "layout-blank"
+            "name": "Page Layouts",
+            "icon": "mail",
+            "slug": "",
+            "badge": "5",
+            "badgeClass": "badge rounded-pill badge-light-danger ms-auto me-1",
+            "submenu": [
+                {
+                    "url": "layouts/collapsed-menu",
+                    "name": "Collapsed Menu",
+                    "icon": "circle",
+                    "slug": "collapsed-menu"
+                },
+                {
+                    "url": "layouts/full",
+                    "name": "Layout Full",
+                    "icon": "circle",
+                    "slug": "layout-full"
+                },
+                {
+                    "url": "layouts/without-menu",
+                    "name": "Without Menu",
+                    "icon": "circle",
+                    "slug": "without-menu"
+                },
+                {
+                    "url": "layouts/empty",
+                    "name": "Layout Empty",
+                    "icon": "circle",
+                    "slug": "layout-empty"
+                },
+                {
+                    "url": "layouts/blank",
+                    "name": "Layout Blank",
+                    "icon": "circle",
+                    "slug": "layout-blank"
+                }
+            ]
         }
-      ]
-    }
-  ]
+    ]
 }
