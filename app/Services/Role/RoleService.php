@@ -20,6 +20,7 @@ class RoleService
         $this->permissionModel = $permissionModel;
     }
 
+
     /**
      * Create New Role
      *
