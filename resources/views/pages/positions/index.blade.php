@@ -77,11 +77,11 @@
     <table id="listPositionTbl" style="display: none;" cellspacing="0" width="100%"></table>
 
 
-    {{-- Container List Role(Get From '#listpermissionTable') --}}
+    {{-- Container List Position(Get From '#listPositionTbl') --}}
     <div class="row my-2" id="listPosition" style="display: none"
         data-url-datatables="{{ route('positions.datatables') }}">
     </div>
-    {{-- /List Position Grid --}}
+
 
     {{-- Create Position Modal --}}
     <x-modals.create-position></x-modals.create-position>

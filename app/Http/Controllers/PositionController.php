@@ -19,8 +19,8 @@ class PositionController extends Controller
     {
         $this->positionRepository = $positionRepository;
 
-        // $this->middleware('permission:positions_read')
-        //     ->only(['index']);
+        $this->middleware('permission:positions_read')
+            ->only(['index']);
 
         $this->middleware('permission:positions_create')
             ->only(['create', 'store']);
@@ -82,7 +82,7 @@ class PositionController extends Controller
      * Display the specified resource.
      *
      * @param  \App\Models\Position  $position
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show(Position $position)
     {
@@ -90,25 +90,27 @@ class PositionController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Show the form for editing Position.
      *
      * @param  \App\Models\Position  $position
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function edit(Position $position)
+    public function edit(Position $position): JsonResponse
     {
         return jsend_success(['position' => $position]);
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update Position.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Position  $position
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(UpdateRequest $request, Position $position)
-    {
+    public function update(
+        UpdateRequest $request,
+        Position $position
+    ): JsonResponse {
         try {
             $this->positionRepository
                 ->updatePosition($position, $request->all());
@@ -124,12 +126,12 @@ class PositionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove Position.
      *
      * @param  \App\Models\Position  $position
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Position $position)
+    public function destroy(Position $position): JsonResponse
     {
         try {
             $this->positionRepository
