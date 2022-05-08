@@ -14,5 +14,12 @@ return [
             ['link' => "permissions", 'name' => "Permissions"],
             ['name' => "Index"]
         ]
-    ]
+    ],
+    'positions' => [
+        'index' => [
+            ['link' => "home", 'name' => "Home"],
+            ['link' => "positions", 'name' => "Positions"],
+            ['name' => "Index"]
+        ]
+    ],
 ];

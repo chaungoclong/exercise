@@ -743,5 +743,9 @@
     "Create Role success": "Thêm Vai trò thành công",
     "Create Role failed": "Thêm Vai trò không thành công",
     "Update Role success": "Sửa Vai trò thành công",
-    "Update Role failed": "Sửa Vai trò thành công"
+    "Update Role failed": "Sửa Vai trò không thành công",
+    "Create Position success": "Thêm Vị trí thành công",
+    "Create Position failed": "Thêm Vị trí không thành công",
+    "Update Position success": "Sửa Vị trí thành công",
+    "Update Position failed": "Sửa Vị trí không thành công"
 }

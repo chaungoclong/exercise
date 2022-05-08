@@ -5,9 +5,15 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use App\Repositories\Contracts\RoleRepository;
 use App\Repositories\Contracts\UserRepository;
+use App\Repositories\Contracts\ReportRepository;
+use App\Repositories\Contracts\ProjectRepository;
+use App\Repositories\Contracts\PositionRepository;
 use App\Repositories\Contracts\PermissionRepository;
 use App\Repositories\Eloquent\Role\EloquentRoleRepository;
 use App\Repositories\Eloquent\User\EloquentUserRepository;
+use App\Repositories\Eloquent\Position\EloquentReportRepository;
+use App\Repositories\Eloquent\Position\EloquentProjectRepository;
+use App\Repositories\Eloquent\Position\EloquentPositionRepository;
 use App\Repositories\Eloquent\Permission\EloquentPermissionRepository;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -20,15 +26,39 @@ class RepositoryServiceProvider extends ServiceProvider
     public function register()
     {
         // UserRepository
-        app()->singleton(UserRepository::class, EloquentUserRepository::class);
+        app()->singleton(
+            UserRepository::class,
+            EloquentUserRepository::class
+        );
 
         // RoleRepository
-        app()->singleton(RoleRepository::class, EloquentRoleRepository::class);
+        app()->singleton(
+            RoleRepository::class,
+            EloquentRoleRepository::class
+        );
 
         // PermissionRepository
         app()->singleton(
             PermissionRepository::class,
             EloquentPermissionRepository::class
+        );
+
+        // PositionRepository
+        app()->singleton(
+            PositionRepository::class,
+            EloquentPositionRepository::class
+        );
+
+        // ProjectRepository
+        app()->singleton(
+            ProjectRepository::class,
+            EloquentProjectRepository::class
+        );
+
+        // ReportRepository
+        app()->singleton(
+            ReportRepository::class,
+            EloquentReportRepository::class
         );
     }
 

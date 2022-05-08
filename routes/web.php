@@ -14,6 +14,7 @@ use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\PositionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -137,9 +138,18 @@ Route::middleware(['auth', 'userActive'])->group(function () {
 
     Route::resource('permissions', PermissionController::class);
     // END: Manage Permission
+
+    // BEGIN: Manage Positions
+    Route::get(
+        'positions/datatables',
+        [PositionController::class, 'datatables']
+    )->name('positions.datatables');
+
+    Route::resource('positions', PositionController::class);
+    // END: Manage Positions
 });
 // END: Private route
 
-Route::get('test', function (UserRepository $userRepository) {
-    return view('test');
-});
+Route::get('test', function () {
+    dd(request()->all());
+})->name('test');

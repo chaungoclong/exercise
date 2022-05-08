@@ -16,7 +16,7 @@ return [
             'users'         => 'c,r,u,d',
             'projects'      => 'c,r,u,d',
             'reports'       => 'c,r,u,d',
-            'project_roles' => 'c,r,u,d',
+            'positions'     => 'c,r,u,d',
             'roles'         => 'c,r,u,d',
             'permissions'   => 'c,r,u,d',
         ],
@@ -24,7 +24,7 @@ return [
             'users'         => 'c,r,u,d',
             'projects'      => 'c,r,u,d',
             'reports'       => 'c,r,u,d',
-            'project_roles' => 'c,r,u,d',
+            'positions'     => 'c,r,u,d',
         ],
         'employee' => [
             'reports' => 'c,r,u,d',
