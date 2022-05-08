@@ -7,12 +7,13 @@ use App\Models\Permission;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use App\Exceptions\NoPermissionException;
+use Illuminate\Database\Eloquent\Collection;
 use Yajra\DataTables\Facades\DataTables;
 
 class RoleService
 {
     private Role $roleModel;
-    private const VIEW_CARD_ROLE = 'components.cards.role-card';
+    private const VIEW_CARD_ROLE = 'components.datatables.role-card';
 
     public function __construct(Role $roleModel, Permission $permissionModel)
     {
@@ -143,7 +144,7 @@ class RoleService
         if ($key instanceof Role) {
             $role = $key;
         } else {
-            $role = $this->roleModel->findWithTrashed($key);
+            $role = $this->roleModel->findByIdWithTrashed($key);
         }
 
         // Can Delete?
@@ -181,7 +182,7 @@ class RoleService
         if ($key instanceof Role) {
             $role = $key;
         } else {
-            $role = $this->roleModel->findOnlyTrashed($key);
+            $role = $this->roleModel->findByIdOnlyTrashed($key);
         }
 
         try {

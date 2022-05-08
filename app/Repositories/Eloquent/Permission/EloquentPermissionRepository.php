@@ -24,31 +24,7 @@ class EloquentPermissionRepository extends EloquentBaseRepository implements
      */
     public function convertToSelectOption(Permission|Collection|null $data): array
     {
-        $options = [];
-
-        if ($data === null) {
-            return $options;
-        }
-
-        if ($data instanceof Collection) {
-            foreach ($data as $permission) {
-                $options[] = [
-                    'id' => $permission->id,
-                    'text' => $permission->name
-                ];
-            }
-
-            return $options;
-        }
-
-        if ($data instanceof Permission) {
-            $options[] = [
-                'id' => $data->id,
-                'text' => $data->name
-            ];
-
-            return $options;
-        }
+        return $this->model->convertToSelectOptions($data);
     }
 
 
@@ -63,9 +39,67 @@ class EloquentPermissionRepository extends EloquentBaseRepository implements
     }
 
 
+    /**
+     * Get DataTables Of Permissions
+     *
+     */
     public function datatables()
     {
-        return DataTables::of($this->findAll())
+        $model = $this->model
+            ->with('roles')
+            ->withCount('roles');
+
+
+        return DataTables::of($model)
+            ->filter(function ($query) {
+                // Filter By Role
+                if (request()->has('role_id') && !is_null(request('role_id'))) {
+                    $roleId = request('role_id');
+
+                    $query->whereHas(
+                        'roles',
+                        function ($subQuery) use ($roleId) {
+                            $subQuery->where('id', $roleId);
+                        }
+                    );
+                }
+
+                // Search By Name And Slug
+                if (request()->has('search')) {
+                    $search = request('search');
+
+                    $query->where(function ($subQuery) use ($search) {
+                        $subQuery->where('name', 'LIKE', "%$search%")
+                            ->orWhere('slug', 'LIKE', "%$search%");
+                    });
+                }
+
+                // Sort By Time and Alphabet
+                if (request()->has('sort')) {
+                    switch (request('sort')) {
+                        case config('constants.sort.latest'):
+                            $query->orderBy('created_at', 'desc');
+
+                        case config('constants.sort.a-z'):
+                            $query->orderBy('name', 'asc');
+
+                        case config('constants.sort.z-a'):
+                            $query->orderBy('name', 'desc');
+
+                        case config('constants.sort.oldest'):
+                        default:
+                            $query->orderBy('created_at', 'asc');
+                            break;
+                    }
+                }
+            })
+            ->addColumn('html', function ($permission) {
+                return view(
+                    'components.datatables.permission-card',
+                    ['permission' => $permission]
+                )->render();
+            })
+            ->rawColumns(['html'])
             ->make(true);
     }
 }

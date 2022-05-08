@@ -7,35 +7,29 @@ use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Services\Role\RoleService;
-use App\Services\User\UserService;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Exceptions\NoPermissionException;
 use App\Http\Requests\Role\CreateRequest;
 use App\Http\Requests\Role\UpdateRequest;
+use App\Repositories\Contracts\PermissionRepository;
+use App\Repositories\Contracts\RoleRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 
 class RoleController extends Controller
 {
-    private RoleService $roleService;
-    private UserService $userService;
-    private Role $roleModel;
-    private Permission $permissionModel;
+    private PermissionRepository $permissionRepository;
+    private RoleRepository $roleRepository;
 
-    private const VIEW_LIST_ROLE = 'components.blocks.list-role';
     private const VIEW_INDEX = 'pages.roles.index';
 
     public function __construct(
-        RoleService $roleService,
-        UserService $userService,
-        Role $roleModel,
-        Permission $permissionModel
+        RoleRepository $roleRepository,
+        PermissionRepository $permissionRepository
     ) {
-        $this->roleService = $roleService;
-        $this->userService = $userService;
-        $this->roleModel = $roleModel;
-        $this->permissionModel = $permissionModel;
+        $this->roleRepository = $roleRepository;
+        $this->permissionRepository = $permissionRepository;
 
         $this->middleware('permission:roles_read')
             ->only('index');
@@ -55,14 +49,11 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
-        $roles = $this->roleModel->getListIndex();
-
         return view(
             self::VIEW_INDEX,
             [
-                'roles' => $roles,
                 'configData' => \App\Helpers\Helper::applClasses(),
                 'breadcrumbs' => config('breadcrumbs.roles.index')
             ],
@@ -77,7 +68,7 @@ class RoleController extends Controller
      */
     public function create(): JsonResponse
     {
-        $permissionOptions = $this->permissionModel
+        $permissionOptions = $this->permissionRepository
             ->getAllSelectOptions();
 
         return jsend_success(['permissionOptions' => $permissionOptions]);
@@ -92,7 +83,7 @@ class RoleController extends Controller
     public function store(CreateRequest $request): JsonResponse
     {
         try {
-            $this->roleService
+            $this->roleRepository
                 ->createRole($request->all());
         } catch (\Exception $e) {
             Log::error($e);
@@ -112,10 +103,14 @@ class RoleController extends Controller
      */
     public function edit(Role $role): JsonResponse
     {
-        $permissionOptions = $this->permissionModel
+        $permissionOptions = $this
+            ->permissionRepository
             ->getAllSelectOptions();
 
-        $idPermissionsSelected = $role->permissions->pluck('id')->toArray();
+        $idPermissionsSelected = $role
+            ->permissions
+            ->pluck('id')
+            ->toArray();
 
         return jsend_success(
             [
@@ -136,7 +131,7 @@ class RoleController extends Controller
     public function update(UpdateRequest $request, Role $role): JsonResponse
     {
         try {
-            $this->roleService->updateRole($role, $request->all());
+            $this->roleRepository->updateRole($role, $request->all());
         } catch (ModelNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
@@ -157,7 +152,7 @@ class RoleController extends Controller
     public function destroy(Role $role)
     {
         try {
-            $this->roleService->deleteRole($role);
+            $this->roleRepository->deleteRole($role);
         } catch (NoPermissionException | ModelNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
@@ -177,7 +172,7 @@ class RoleController extends Controller
     public function forceDelete(Request $request, string $id): JsonResponse
     {
         try {
-            $this->roleService->forceDeleteRole($id);
+            $this->roleRepository->forceDeleteRole($id);
         } catch (NoPermissionException | ModelNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
@@ -198,7 +193,7 @@ class RoleController extends Controller
     public function restore(Request $request, string $id): JsonResponse
     {
         try {
-            $this->roleService->restoreRole($id);
+            $this->roleRepository->restoreRole($id);
         } catch (ModelNotFoundException $e) {
             throw $e;
         } catch (\Exception $e) {
@@ -216,6 +211,6 @@ class RoleController extends Controller
      */
     public function datatables()
     {
-        return $this->roleService->datatables();
+        return $this->roleRepository->datatables();
     }
 }

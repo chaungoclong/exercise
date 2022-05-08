@@ -23,4 +23,11 @@ interface PermissionRepository extends BaseRepository
      * @return array
      */
     public function getAllSelectOptions(): array;
+
+
+    /**
+     * Get DataTables Of Permissions
+     *
+     */
+    public function datatables();
 }

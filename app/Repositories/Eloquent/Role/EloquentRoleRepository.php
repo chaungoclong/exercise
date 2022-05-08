@@ -3,10 +3,12 @@
 namespace App\Repositories\Eloquent\Role;
 
 use App\Models\Role;
-use App\Repositories\Contracts\PermissionRepository;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+use Yajra\DataTables\Facades\DataTables;
+use App\Exceptions\NoPermissionException;
 use App\Repositories\Contracts\RoleRepository;
 use App\Repositories\Eloquent\EloquentBaseRepository;
-use Illuminate\Database\Eloquent\Collection;
 
 /**
  *
@@ -14,16 +16,11 @@ use Illuminate\Database\Eloquent\Collection;
 class EloquentRoleRepository extends EloquentBaseRepository implements
     RoleRepository
 {
-    private PermissionRepository $permissionRepository;
+    private const VIEW_CARD_ROLE = 'components.datatables.role-card';
 
-    private const VIEW_RENDER_CARD_ROLE = 'components.cards.role-card';
-
-    public function __construct(
-        Role $model,
-        PermissionRepository $permissionRepository
-    ) {
+    public function __construct(Role $model)
+    {
         $this->model = $model;
-        $this->permissionRepository = $permissionRepository;
     }
 
     /**
@@ -35,101 +32,229 @@ class EloquentRoleRepository extends EloquentBaseRepository implements
         return $this->model->getDefault();
     }
 
-
     /**
-     * Get all Role with users and count users
+     * Create New Role
      *
-     * @return Collection
+     * @param array $payload
+     * @return Role
      */
-    public function getListIndex(): Collection
+    public function createRole(array $payload): Role
     {
-        return $this->model
-            ->with('users')
-            ->withCount('users')
-            ->orderBy('created_at')
-            ->get();
-    }
+        try {
+            DB::beginTransaction();
 
+            // Create New Role
+            $role = $this->create(Arr::except($payload, 'permissions'));
 
-    /**
-     * Get permission options for create || update Role
-     *
-     * @return array
-     */
-    public function getPermissionOptions(): array
-    {
-        $permissionOptions = [];
+            // Attach Permissions
+            $role->permissions()
+                ->sync($payload['permissions'] ?? [], false);
 
-        foreach ($this->permissionRepository->findAll() as $permission) {
-            $permissionOptions[] = [
-                'id' => $permission->id,
-                'text' => $permission->name
-            ];
+            DB::commit();
+
+            return $role;
+        } catch (\Exception $e) {
+            DB::rollback();
+
+            throw $e;
         }
-
-        return $permissionOptions;
     }
 
-    /**
-     * Create and attach Permission
-     *
-     * @param array $attributes
-     * @param array $permissions
-     * @return Role
-     */
-    public function createAndAttachPermissions(
-        array $attributes,
-        array $permissions
-    ): Role {
-        $role = $this->model->create($attributes);
-
-        $role->attachPermission($permissions);
-
-        $role = $this->findById($role->id, ['users'], ['users']);
-
-        return $role;
-    }
 
     /**
-     * Update and sync Permissions
+     * Update Role, Do Not Update 'slug' Attribute
      *
-     * @param integer|string|Role $key
-     * @param array $attributes
-     * @param array $permissions
+     * @param string|integer|Role $key
+     * @param array $payload
      * @return Role
      */
-    public function updateAndSyncPermissions(
-        int|string|Role $key,
-        array $attributes,
-        array $permissions
+    public function updateRole(
+        string|int|Role $key,
+        array $payload
     ): Role {
         $role = null;
 
+        // Find Role For Edit
         if ($key instanceof Role) {
             $role = $key;
         } else {
             $role = $this->findById($key);
         }
 
-        $role->update($attributes);
+        // Update Role
+        try {
+            DB::beginTransaction();
 
-        $role->syncPermission($permissions);
+            $role->update(Arr::only($payload, 'name'));
 
-        $role = $this->findById($role->id, ['users'], ['users']);
+            $role->permissions()
+                ->sync($payload['permissions'] ?? []);
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            throw $e;
+        }
 
         return $role;
     }
 
 
     /**
-     * Render HTML for Role
+     * Delete Role
      *
-     * @param Role $role
-     * @return string
+     * @param integer|string|Role $key
+     * @return boolean
      */
-    public function renderCardRole(Role $role): string
+    public function deleteRole(int|string|Role $key): bool
     {
-        return view(self::VIEW_RENDER_CARD_ROLE, ['role' => $role])
-            ->render();
+        $role = null;
+
+        // Find Role For Delete
+        if ($key instanceof Role) {
+            $role = $key;
+        } else {
+            $role = $this->findById($key);
+        }
+
+        // Can Delete?
+        if (!$role->is_user_define) {
+            throw new NoPermissionException(__('This action is unauthorized.'));
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $result = $role->delete();
+
+            DB::commit();
+
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            throw $e;
+        }
+    }
+
+
+    /**
+     * Force Delete Role
+     *
+     * @param integer|string|Role $key
+     * @return void
+     */
+    public function forceDeleteRole(int|string|Role $key): bool
+    {
+        $role = null;
+
+        // Find Role For Force Delete
+        if ($key instanceof Role) {
+            $role = $key;
+        } else {
+            $role = $this->findByIdWithTrashed($key);
+        }
+
+        // Can Delete?
+        if (!$role->is_user_define) {
+            throw new NoPermissionException(__('This action is unauthorized.'));
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $result = $role->forceDelete();
+
+            DB::commit();
+
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            throw $e;
+        }
+    }
+
+
+    /**
+     * Restore Role
+     *
+     * @param integer|string|Role $key
+     * @return void
+     */
+    public function restoreRole(int|string|Role $key): bool
+    {
+        $role = null;
+
+        // Find Role For Restore
+        if ($key instanceof Role) {
+            $role = $key;
+        } else {
+            $role = $this->findByIdOnlyTrashed($key);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            $result = $role->restore();
+
+            DB::commit();
+
+            return $result;
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            throw $e;
+        }
+    }
+
+    /**
+     * Get Datatables Of Role
+     *
+     */
+    public function datatables()
+    {
+        $eloquent = $this->model
+            ->with('users')
+            ->withCount('users');
+
+        return DataTables::of($eloquent)
+            ->filter(function ($query) {
+                // Search By Name And Slug
+                if (request()->has('search')) {
+                    $search = request('search');
+
+                    $query->where('name', 'LIKE', "%$search%")
+                        ->orWhere('slug', 'LIKE', "%$search%");
+                }
+
+                // Sort By Time and Alphabet
+                if (request()->has('sort')) {
+                    switch (request('sort')) {
+                        case config('constants.sort.latest'):
+                            $query->orderBy('created_at', 'desc');
+
+                        case config('constants.sort.a-z'):
+                            $query->orderBy('name', 'asc');
+
+                        case config('constants.sort.z-a'):
+                            $query->orderBy('name', 'desc');
+
+                        case config('constants.sort.oldest'):
+                        default:
+                            $query->orderBy('created_at', 'asc');
+                            break;
+                    }
+                }
+            })
+            ->addColumn('html', function ($role) {
+                return view(
+                    self::VIEW_CARD_ROLE,
+                    ['role' => $role]
+                )->render();
+            })
+            ->rawColumns(['html'])
+            ->make(true);
     }
 }

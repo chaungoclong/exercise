@@ -150,6 +150,7 @@
     "/js/scripts/pages/page-api-key.js": "/js/scripts/pages/page-api-key.js",
     "/js/scripts/pages/page-blog-edit.js": "/js/scripts/pages/page-blog-edit.js",
     "/js/scripts/pages/page-knowledge-base.js": "/js/scripts/pages/page-knowledge-base.js",
+    "/js/scripts/pages/page-permission.js": "/js/scripts/pages/page-permission.js",
     "/js/scripts/pages/page-pricing.js": "/js/scripts/pages/page-pricing.js",
     "/js/scripts/pages/page-profile.js": "/js/scripts/pages/page-profile.js",
     "/js/scripts/pages/page-roles.js": "/js/scripts/pages/page-roles.js",

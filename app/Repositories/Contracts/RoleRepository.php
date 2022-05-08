@@ -15,53 +15,59 @@ interface RoleRepository extends BaseRepository
 
 
     /**
-     * Get a list of roles with its users sorted in descending order
+     * Create New Role
      *
-     * @return Collection
-     */
-    public function getListIndex(): Collection;
-
-
-    /**
-     * Get permission options for create || update Role
-     *
-     * @return array
-     */
-    public function getPermissionOptions(): array;
-
-
-    /**
-     * Create Role and Attach Permissions
-     *
-     * @param array $attributes
-     * @param array $permissions
+     * @param array $payload
      * @return Role
      */
-    public function createAndAttachPermissions(
-        array $attributes,
-        array $permissions
+    public function createRole(array $payload): Role;
+
+
+
+    /**
+     * Update Role, Do Not Update 'slug' Attribute
+     *
+     * @param string|integer|Role $key
+     * @param array $payload
+     * @return Role
+     */
+    public function updateRole(
+        string|int|Role $key,
+        array $payload
     ): Role;
 
 
     /**
-     * Update and sync Permissions
+     * Delete Role
      *
      * @param integer|string|Role $key
-     * @param array $attributes
-     * @param array $permissions
-     * @return Role
+     * @return boolean
      */
-    public function updateAndSyncPermissions(
-        int|string|Role $key,
-        array $attributes,
-        array $permissions
-    ): Role;
+    public function deleteRole(int|string|Role $key): bool;
+
 
     /**
-     * Render HTML for Role
+     * Force Delete Role
      *
-     * @param Role $role
-     * @return string
+     * @param integer|string|Role $key
+     * @return void
      */
-    public function renderCardRole(Role $role): string;
+    public function forceDeleteRole(int|string|Role $key): bool;
+
+
+
+    /**
+     * Restore Role
+     *
+     * @param integer|string|Role $key
+     * @return void
+     */
+    public function restoreRole(int|string|Role $key): bool;
+
+
+    /**
+     * Get Datatables Of Role
+     *
+     */
+    public function datatables();
 }

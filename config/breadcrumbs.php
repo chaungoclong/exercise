@@ -8,4 +8,11 @@ return [
             ['name' => "Index"]
         ]
     ],
+    'permissions' => [
+        'index' => [
+            ['link' => "home", 'name' => "Home"],
+            ['link' => "permissions", 'name' => "Permissions"],
+            ['name' => "Index"]
+        ]
+    ]
 ];

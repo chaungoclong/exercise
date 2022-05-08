@@ -3,10 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Models\Permission;
+use App\Repositories\Contracts\PermissionRepository;
+use App\Repositories\Contracts\RoleRepository;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
+    private PermissionRepository $permissionRepository;
+    private RoleRepository $roleRepository;
+
+    private const VIEW_INDEX = 'pages.permissions.index';
+
+    public function __construct(
+        PermissionRepository $permissionRepository,
+        RoleRepository $roleRepository
+    ) {
+        $this->permissionRepository = $permissionRepository;
+        $this->roleRepository = $roleRepository;
+
+        $this->middleware('permission:permissions_read')
+            ->only(['index', 'show']);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +33,16 @@ class PermissionController extends Controller
      */
     public function index()
     {
-        //
+        $roles = $this->roleRepository->findAll();
+
+        return view(
+            self::VIEW_INDEX,
+            [
+                'roles' => $roles,
+                'configData' => \App\Helpers\Helper::applClasses(),
+                'breadcrumbs' => config('breadcrumbs.permissions.index')
+            ],
+        );
     }
 
     /**
@@ -44,9 +72,11 @@ class PermissionController extends Controller
      * @param  \App\Models\Permission  $permission
      * @return \Illuminate\Http\Response
      */
-    public function show(Permission $permission)
+    public function show(Permission $permission): JsonResponse
     {
-        //
+        $permission = $permission->load('roles');
+
+        return jsend_success(['permission' => $permission]);
     }
 
     /**
@@ -81,5 +111,15 @@ class PermissionController extends Controller
     public function destroy(Permission $permission)
     {
         //
+    }
+
+    /**
+     * Datatables Of Permissions
+     *
+     * @return void
+     */
+    public function datatables()
+    {
+        return $this->permissionRepository->datatables();
     }
 }
