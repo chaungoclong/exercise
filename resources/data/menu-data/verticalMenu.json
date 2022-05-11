@@ -35,6 +35,20 @@
             ]
         },
         {
+            "url": "users",
+            "name": "User",
+            "icon": "user",
+            "slug": "users.index",
+            "permission": "users_read"
+        },
+        {
+            "url": "positions",
+            "name": "Positions",
+            "icon": "user-check",
+            "slug": "positions.index",
+            "permission": "positions_read"
+        },
+        {
             "name": "Page Layouts",
             "icon": "mail",
             "slug": "",

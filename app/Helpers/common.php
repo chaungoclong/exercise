@@ -1,6 +1,8 @@
 <?php
 
 use App\Exceptions\NoPermissionException;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Gate;
 
@@ -156,5 +158,43 @@ if (!function_exists('can')) {
                 __('Sorry! You are not authorized to perform this action.')
             );
         }
+    }
+}
+
+if (!function_exists('toSelect2')) {
+    /**
+     * Convert Model Or Collection to Select2 Options
+     *
+     * @param Model|Collection $data
+     * @param string $id
+     * @param string $text
+     * @return array
+     */
+    function toSelect2(
+        Model|Collection $data,
+        $id = 'id',
+        $text = 'text'
+    ): array {
+        $options = [];
+
+        // If $data is not Model Or Collection return []
+        if (!($data instanceof Model || $data instanceof Collection)) {
+            return $options;
+        }
+
+        // Convert $data to Collection
+        $data = ($data instanceof Collection) ? $data : collect([$data]);
+
+        foreach ($data as $model) {
+            // If $model has all attributes add it to $options
+            if (isset($model->$id, $model->$text)) {
+                $options[] = [
+                    'id' => $model->$id,
+                    'text' => $model->$text
+                ];
+            }
+        }
+
+        return $options;
     }
 }

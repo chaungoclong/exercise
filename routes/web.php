@@ -15,6 +15,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -147,9 +148,24 @@ Route::middleware(['auth', 'userActive'])->group(function () {
 
     Route::resource('positions', PositionController::class);
     // END: Manage Positions
+
+
+    // BEGIN: Manage Users
+    Route::get(
+        'users/datatables',
+        [UserController::class, 'datatables']
+    )->name('users.datatables');
+
+    Route::patch(
+        'users/switch-status/{user}',
+        [UserController::class, 'switchStatus']
+    )->name('users.switch_status');
+
+    Route::resource('users', UserController::class);
+    // END: Manage Users
 });
 // END: Private route
 
 Route::get('test', function () {
-    dd(request()->all());
+    dd(toSelect2(\App\Models\Role::find(2), 'id', 'slug'));
 })->name('test');

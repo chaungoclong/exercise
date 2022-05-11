@@ -40,9 +40,9 @@ class EloquentRoleRepository extends EloquentBaseRepository implements
      */
     public function createRole(array $payload): Role
     {
-        try {
-            DB::beginTransaction();
+        DB::beginTransaction();
 
+        try {
             // Create New Role
             $role = $this->create(Arr::except($payload, 'permissions'));
 
@@ -60,7 +60,6 @@ class EloquentRoleRepository extends EloquentBaseRepository implements
         }
     }
 
-
     /**
      * Update Role, Do Not Update 'slug' Attribute
      *
@@ -72,34 +71,24 @@ class EloquentRoleRepository extends EloquentBaseRepository implements
         string|int|Role $key,
         array $payload
     ): Role {
-        $role = null;
-
-        // Find Role For Edit
-        if ($key instanceof Role) {
-            $role = $key;
-        } else {
-            $role = $this->findById($key);
-        }
+        DB::beginTransaction();
 
         // Update Role
         try {
-            DB::beginTransaction();
-
-            $role->update(Arr::only($payload, 'name'));
+            $role = $this->update($key, Arr::only($payload, 'name'));
 
             $role->permissions()
                 ->sync($payload['permissions'] ?? []);
 
             DB::commit();
+
+            return $role;
         } catch (\Exception $e) {
             DB::rollBack();
 
             throw $e;
         }
-
-        return $role;
     }
-
 
     /**
      * Delete Role
@@ -109,24 +98,10 @@ class EloquentRoleRepository extends EloquentBaseRepository implements
      */
     public function deleteRole(int|string|Role $key): bool
     {
-        $role = null;
-
-        // Find Role For Delete
-        if ($key instanceof Role) {
-            $role = $key;
-        } else {
-            $role = $this->findById($key);
-        }
-
-        // Can Delete?
-        if (!$role->is_user_define) {
-            throw new NoPermissionException(__('This action is unauthorized.'));
-        }
+        DB::beginTransaction();
 
         try {
-            DB::beginTransaction();
-
-            $result = $role->delete();
+            $result = $this->delete($key);
 
             DB::commit();
 
@@ -138,7 +113,6 @@ class EloquentRoleRepository extends EloquentBaseRepository implements
         }
     }
 
-
     /**
      * Force Delete Role
      *
@@ -147,24 +121,10 @@ class EloquentRoleRepository extends EloquentBaseRepository implements
      */
     public function forceDeleteRole(int|string|Role $key): bool
     {
-        $role = null;
-
-        // Find Role For Force Delete
-        if ($key instanceof Role) {
-            $role = $key;
-        } else {
-            $role = $this->findByIdWithTrashed($key);
-        }
-
-        // Can Delete?
-        if (!$role->is_user_define) {
-            throw new NoPermissionException(__('This action is unauthorized.'));
-        }
+        DB::beginTransaction();
 
         try {
-            DB::beginTransaction();
-
-            $result = $role->forceDelete();
+            $result = $this->forceDelete($key);
 
             DB::commit();
 
@@ -185,19 +145,10 @@ class EloquentRoleRepository extends EloquentBaseRepository implements
      */
     public function restoreRole(int|string|Role $key): bool
     {
-        $role = null;
-
-        // Find Role For Restore
-        if ($key instanceof Role) {
-            $role = $key;
-        } else {
-            $role = $this->findByIdOnlyTrashed($key);
-        }
+        DB::beginTransaction();
 
         try {
-            DB::beginTransaction();
-
-            $result = $role->restore();
+            $result = $this->restore($key);
 
             DB::commit();
 

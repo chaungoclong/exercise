@@ -25,6 +25,12 @@ jQuery.validator.addMethod('filesize', function (value, element, param) {
     return this.optional(element) || ((element.files[0].size / 1000) <= param);
 }, 'Kích thước tệp phải nhỏ hơn hoặc bằng {0} kB');
 
+// Check Phone
+jQuery.validator.addMethod('phone', function (value, element) {
+    return this.optional(element) ||
+        /(84|0[3|5|7|8|9])+([0-9]{8})\b/.test(value);
+}, 'Vui lòng nhập số điện thoại hợp lệ');
+
 /**
  * Toast config reuse
  */
@@ -180,7 +186,7 @@ const resetForm = (form) => {
 
     $validator.resetForm();
 
-    $form.find('.error').removeClass('error');
+    $form.find('.error, .is-invalid').removeClass('error is-invalid');
 }
 
 // Show first error validate
@@ -191,4 +197,55 @@ const showFirstError = (xhr) => {
         title: errors[Object.keys(errors)[0]][0],
         icon: 'error'
     });
+}
+
+
+// Bind JSON To Form
+(function ($) {
+    $.fn.jsonToForm = function (data, callbacks) {
+        var formInstance = this;
+
+        var options = {
+            data: data || null,
+            callbacks: callbacks,
+        };
+
+        if (options.data != null) {
+            $.each(options.data, function (k, v) {
+                var elements = $('[name^="' + k + '"]', formInstance);
+
+                if (options.callbacks != null && options.callbacks.hasOwnProperty(k)) {
+                    options.callbacks[k](v);
+                    return;
+                }
+
+                $(elements).each(function (index, element) {
+                    if (Array.isArray(v)) {
+                        v.forEach(function (val) {
+                            $(element).is("select")
+                                ? $(element)
+                                    .find("[value='" + val + "']")
+                                    .prop("selected", true)
+                                : $(element).val() == val
+                                    ? $(element).prop("checked", true)
+                                    : "";
+                        });
+                    } else if ($(element).is(":checkbox") || $(element).is(":radio")) {
+                        // checkbox group or radio group
+                        $(element).val() == v ? $(element).prop("checked", true) : "";
+                    } else {
+                        $('[name="' + k + '"]', formInstance).val(v);
+                    }
+                });
+            });
+        }
+    };
+})(jQuery);
+
+
+// Get data from input hidden store data from PHP
+function php(name) {
+    const PREFIX = '#passing_data_from_PHP_to_JavaScript_';
+
+    return $(PREFIX + name).val();
 }

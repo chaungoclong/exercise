@@ -72,12 +72,22 @@ class User extends Authenticatable
     ];
 
     /**
-     * [role description]
+     * Get User's Role
      * @return [type] [description]
      */
     public function role()
     {
         return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
+    public function projects()
+    {
+        return $this->belongsToMany(
+            Project::class,
+            'project_user',
+            'user_id',
+            'project_id'
+        );
     }
 
     /**

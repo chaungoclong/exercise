@@ -22,4 +22,14 @@ return [
             ['name' => "Index"]
         ]
     ],
+    'users' => [
+        'index' => [
+            ['link' => "home", 'name' => "Home"],
+            ['name' => "List User"]
+        ],
+        'show' => [
+            ['link' => "home", 'name' => "Home"],
+            ['link' => 'users', 'name' => "List User"],
+        ]
+    ],
 ];

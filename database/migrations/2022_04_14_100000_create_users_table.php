@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration
             $table->text('avatar')->nullable();
             $table->boolean('status')->default(true);
             $table->integer('role_id')->unsigned()->nullable();
+            $table->boolean('is_user_define')->default(true);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

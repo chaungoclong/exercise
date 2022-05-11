@@ -2,9 +2,9 @@
 
 namespace App\Repositories\Eloquent;
 
-use App\Repositories\Contracts\BaseRepository;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Collection;
+use App\Repositories\Contracts\BaseRepository;
 
 abstract class EloquentBaseRepository implements BaseRepository
 {
@@ -157,17 +157,15 @@ abstract class EloquentBaseRepository implements BaseRepository
      *
      * @param integer|string|Model $key
      * @param array $attributes
-     * @return boolean
+     * @return Model
      */
-    public function update(int|string|Model $key, array $attributes): bool
+    public function update(int|string|Model $key, array $attributes): Model
     {
-        if ($key instanceof Model) {
-            return $key->update($attributes);
-        }
+        $model = ($key instanceof Model) ? $key : $this->findById($key);
 
-        $model = $this->findById($key);
+        $model->update($attributes);
 
-        return $model->update($attributes);
+        return $model;
     }
 
 

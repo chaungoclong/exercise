@@ -25,7 +25,7 @@ class BladeServiceProvider extends ServiceProvider
     public function boot()
     {
         // blade directive for checked, selected and actived
-        $props = ['checked', 'selected', 'actived'];
+        $props = ['checked', 'selected', 'actived', 'disabled'];
 
         foreach ($props as $prop) {
             Blade::directive($prop, function ($value) use ($prop) {
@@ -35,6 +35,12 @@ class BladeServiceProvider extends ServiceProvider
 
         Blade::directive('showError', function ($parameters) {
             return "<?php echo displayErrorInput($parameters) ?>";
+        });
+
+
+        // Format Money VNĐ
+        Blade::directive('vnd', function ($value) {
+            return "<?php echo number_format($value, 2, ',', ' ') . ' đ'; ?>";
         });
     }
 }

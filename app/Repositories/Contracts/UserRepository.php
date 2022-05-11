@@ -23,7 +23,6 @@ interface UserRepository extends BaseRepository
      */
     public function uploadAvatar(UploadedFile $fileUploaded): string;
 
-
     /**
      * Change password
      *
@@ -37,4 +36,41 @@ interface UserRepository extends BaseRepository
         string $currentPassword,
         string $newPassword
     ): ?bool;
+
+    /**
+     * Create New User
+     *
+     * @param array $payload
+     * @return User
+     */
+    public function createUser(array $payload): User;
+
+
+
+    /**
+     * Update User
+     *
+     * @param string|integer|User $key
+     * @param array $payload
+     * @return bool
+     */
+    public function updateUser(
+        string|int|User $key,
+        array $payload
+    ): User;
+
+
+    /**
+     * Delete User
+     *
+     * @param integer|string|User $key
+     * @return boolean
+     */
+    public function deleteUser(int|string|User $key): bool;
+
+    /**
+     * Get DataTables Of User
+     *
+     */
+    public function datatables();
 }

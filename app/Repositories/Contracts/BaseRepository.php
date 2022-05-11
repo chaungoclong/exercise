@@ -111,9 +111,9 @@ interface BaseRepository
      *
      * @param integer|string|Model $key
      * @param array $attributes
-     * @return boolean
+     * @return Model
      */
-    public function update(int|string|Model $key, array $attributes): bool;
+    public function update(int|string|Model $key, array $attributes): Model;
 
 
     /**

@@ -61,7 +61,7 @@ class RoleSeeder extends Seeder
 
                     $this->command->info(
                         'Creating Permission to ' . $abilityName . ' for '
-                        . $module
+                            . $module
                     );
                 }
 
@@ -74,7 +74,8 @@ class RoleSeeder extends Seeder
 
                 $user = User::firstOrCreate([
                     'email' => strtolower($role->name) . '@gmail.com',
-                    'password' => Hash::make('11111111')
+                    'password' => Hash::make('11111111'),
+                    'is_user_define' => false
                 ]);
 
                 $user->assignRole($role);

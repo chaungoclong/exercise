@@ -9,11 +9,12 @@ use Illuminate\Http\JsonResponse;
 use App\Services\Role\RoleService;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Gate;
 use App\Exceptions\NoPermissionException;
 use App\Http\Requests\Role\CreateRequest;
 use App\Http\Requests\Role\UpdateRequest;
-use App\Repositories\Contracts\PermissionRepository;
 use App\Repositories\Contracts\RoleRepository;
+use App\Repositories\Contracts\PermissionRepository;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 
@@ -130,6 +131,12 @@ class RoleController extends Controller
      */
     public function update(UpdateRequest $request, Role $role): JsonResponse
     {
+        // Cannot Edit Role Admin Root
+        Gate::denyIf(
+            $role->isAdmin() && !$role->is_user_define,
+            __('This action is unauthorized.')
+        );
+
         try {
             $this->roleRepository->updateRole($role, $request->all());
         } catch (ModelNotFoundException $e) {
@@ -151,6 +158,12 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
+        // Cannot delete Role Root
+        Gate::denyIf(
+            !$role->is_user_define,
+            __('This action is unauthorized.')
+        );
+
         try {
             $this->roleRepository->deleteRole($role);
         } catch (NoPermissionException | ModelNotFoundException $e) {
