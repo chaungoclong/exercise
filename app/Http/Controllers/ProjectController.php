@@ -28,6 +28,18 @@ class ProjectController extends Controller
     ) {
         $this->projectRepository = $projectRepository;
         $this->userRepository = $userRepository;
+
+        $this->middleware('permission:projects_read')
+            ->only(['index', 'show']);
+
+        $this->middleware('permission:projects_create')
+            ->only(['create', 'store']);
+
+        $this->middleware('permission:projects_update')
+            ->only(['edit', 'update']);
+
+        $this->middleware('permission:projects_delete')
+            ->only(['destroy']);
     }
 
     /**

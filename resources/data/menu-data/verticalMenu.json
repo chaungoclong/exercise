@@ -49,6 +49,13 @@
             "permission": "positions_read"
         },
         {
+            "url": "projects",
+            "name": "Project",
+            "icon": "briefcase",
+            "slug": "projects.index",
+            "permission": "projects_read"
+        },
+        {
             "name": "Page Layouts",
             "icon": "mail",
             "slug": "",

@@ -36,8 +36,6 @@ class EloquentProjectRepository extends EloquentBaseRepository implements
         DB::beginTransaction();
 
         try {
-            // dd($payload);
-
             $project = $this->create($payload);
 
             // Update Or Create Project Members Of this Project if exist element 'project_members' in payload
