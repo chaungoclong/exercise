@@ -40,6 +40,7 @@ class EloquentProjectRepository extends EloquentBaseRepository implements
 
             $project = $this->create($payload);
 
+            // Update Or Create Project Members Of this Project if exist element 'project_members' in payload
             if (!empty($payload['project_members'])) {
                 $projectMemberRows = array_map(
                     function ($item) use ($project) {
@@ -83,6 +84,7 @@ class EloquentProjectRepository extends EloquentBaseRepository implements
         try {
             $project = $this->update($key, Arr::except($payload, 'slug'));
 
+            // Update Or Create Project Members Of this Project if exist element 'project_members' in payload
             if (!empty($payload['project_members'])) {
                 $projectMemberRows = array_map(
                     function ($item) use ($project) {
@@ -93,6 +95,7 @@ class EloquentProjectRepository extends EloquentBaseRepository implements
                     $payload['project_members']
                 );
 
+                // Delete all project members of this Project before update
                 $project->projectMembers()->delete();
 
                 ProjectMember::upsert(
@@ -274,7 +277,6 @@ class EloquentProjectRepository extends EloquentBaseRepository implements
             ],
         ];
 
-
         return array_merge(
             $this->getDataForCreate(),
             ['statusOptions' => $statusOptions]
@@ -289,6 +291,7 @@ class EloquentProjectRepository extends EloquentBaseRepository implements
      */
     public function makeProjectDetails(Project $project): array
     {
+        // Load relationship
         $project->load([
             'projectMembers.user',
             'projectMembers.position'
@@ -313,9 +316,16 @@ class EloquentProjectRepository extends EloquentBaseRepository implements
                 ];
             });
 
+        $breadcrumbs =  [
+            ['link' => "home", 'name' => "Home"],
+            ['link' => 'projects', 'name' => "List Project"],
+            ['name' => $project->slug]
+        ];
+
         return [
             'project' => $project,
-            'userWithPositions' => $userWithPositions
+            'userWithPositions' => $userWithPositions,
+            'breadcrumbs' => $breadcrumbs
         ];
     }
 }

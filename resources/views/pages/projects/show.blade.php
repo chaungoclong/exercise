@@ -25,15 +25,6 @@
 
 @section('content')
     <section>
-        <div class="row mb-1">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body py-0">
-                        <button class="btn btn-outline-primary">Edit</button>
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="row">
             {{-- General --}}
             <x-cards.user-show-general :project="$project" />
