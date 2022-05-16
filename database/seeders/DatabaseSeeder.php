@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             PositionSeeder::class,
             UserSeeder::class,
             ProjectSeeder::class,
+            ProjectMemberSeeder::class
         ]);
     }
 }

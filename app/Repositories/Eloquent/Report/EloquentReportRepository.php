@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Eloquent\Position;
+namespace App\Repositories\Eloquent\Report;
 
 use App\Repositories\Contracts\ReportRepository;
 use App\Repositories\Eloquent\EloquentBaseRepository;

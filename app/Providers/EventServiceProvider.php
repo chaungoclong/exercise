@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Models\Project;
 use App\Models\Role;
+use App\Observers\ProjectObserver;
 use App\Observers\RoleObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -30,5 +32,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot()
     {
         Role::observe(RoleObserver::class);
+
+        Project::observe(ProjectObserver::class);
     }
 }

@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Project;
+use App\Models\ProjectMember;
 use Illuminate\Database\Seeder;
 
-class ProjectSeeder extends Seeder
+class ProjectMemberSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,8 +14,8 @@ class ProjectSeeder extends Seeder
      */
     public function run()
     {
-        Project::truncate();
+        ProjectMember::truncate();
 
-        Project::factory(10)->create();
+        ProjectMember::factory(10)->create();
     }
 }

@@ -18,8 +18,10 @@ class CreateProjectsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('slug')->unique();
-            $table->text('description')->nullable();
+            $table->text('detail')->nullable();
             $table->integer('duration')->unsigned();
+            $table->date('start_date')->nullable()->default(now());
+            $table->date('due_date')->nullable();
             $table->double('revenue');
             $table->tinyInteger('status')->default(Project::STATUS_ON_HOLD);
             $table->timestamps();

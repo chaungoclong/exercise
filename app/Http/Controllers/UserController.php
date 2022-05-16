@@ -110,7 +110,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $user = $user->load(['projects', 'role']);
+        $user = $user->load(['projectMembers.project', 'role']);
 
         $breadcrumbs =  [
             ['link' => "home", 'name' => "Home"],

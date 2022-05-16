@@ -218,7 +218,10 @@
                         </svg>
                     </span>
                     <div class="ms-75">
-                        <h4 class="mb-0">{{ $user->projects->count() }}</h4>
+                        @php
+                            $projectOfUser = $user->projectMembers->map(fn($item) => $item->project)->unique();
+                        @endphp
+                        <h4 class="mb-0">{{ $projectOfUser->count() }}</h4>
                         <small>Project</small>
                     </div>
                 </div>

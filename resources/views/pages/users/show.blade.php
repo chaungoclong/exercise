@@ -23,6 +23,10 @@
         href="{{ asset(mix('css/base/plugins/forms/pickers/form-flat-pickr.css')) }}">
 @endpush
 
+@php
+$projectOfUser = $user->projectMembers->map(fn($item) => $item->project)->unique();
+@endphp
+
 @section('content')
     <section class="app-user-view-account">
         <div class="row">
@@ -54,7 +58,7 @@
                                 </span>
                                 <div class="ms-75">
                                     <h4 class="mb-0">
-                                        {{ $user->projects->count() }}
+                                        {{ $projectOfUser->count() }}
                                     </h4>
                                     <small>Projects</small>
                                 </div>
@@ -131,40 +135,21 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($user->projects as $project)
+                                @foreach ($projectOfUser as $project)
                                     <tr>
                                         <td>
                                             {{ $project->id }}
                                         </td>
                                         <td>
-                                            {{ $project->name }}
+                                            <a href="{{ route('projects.show', $project) }}">
+                                                <span>{{ $project->name }}</span>
+                                            </a>
                                         </td>
                                         <td>
-
-                                            @switch($project->status)
-                                                @case(\App\Models\Project::STATUS_ON_HOLD)
-                                                    <span class="{{ config('constants.project_status_class.on_hold') }}">On
-                                                        Hold</span>
-                                                @break
-
-                                                @case(\App\Models\Project::STATUS_IN_PROGRESS)
-                                                    <span class="{{ config('constants.project_status_class.in_progress') }}">
-                                                        In Progress
-                                                    </span>
-                                                @break
-
-                                                @case(\App\Models\Project::STATUS_COMPLETED)
-                                                    <span class="{{ config('constants.project_status_class.completed') }}">
-                                                        Completed
-                                                    </span>
-                                                @break
-
-                                                @case(\App\Models\Project::STATUS_CANCELLED)
-                                                    <span class="{{ config('constants.project_status_class.cancelled') }}">
-                                                        Cancelled
-                                                    </span>
-                                                @break
-                                            @endswitch
+                                            <span
+                                                class="{{ config('constants.project_status.' . $project->status . '.badge') }}">
+                                                {{ config('constants.project_status.' . $project->status . '.name') }}
+                                            </span>
                                         </td>
                                         <td>
                                             @vnd($project->revenue)

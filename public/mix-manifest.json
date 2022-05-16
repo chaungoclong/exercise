@@ -155,6 +155,8 @@
     "/js/scripts/pages/page-position.js": "/js/scripts/pages/page-position.js",
     "/js/scripts/pages/page-pricing.js": "/js/scripts/pages/page-pricing.js",
     "/js/scripts/pages/page-profile.js": "/js/scripts/pages/page-profile.js",
+    "/js/scripts/pages/page-project-show.js": "/js/scripts/pages/page-project-show.js",
+    "/js/scripts/pages/page-project.js": "/js/scripts/pages/page-project.js",
     "/js/scripts/pages/page-roles.js": "/js/scripts/pages/page-roles.js",
     "/js/scripts/pages/page-user-profile.js": "/js/scripts/pages/page-user-profile.js",
     "/js/scripts/pages/page-user-show.js": "/js/scripts/pages/page-user-show.js",

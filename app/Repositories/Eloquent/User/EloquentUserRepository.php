@@ -169,8 +169,10 @@ class EloquentUserRepository extends EloquentBaseRepository implements
     {
         $eloquent = $this
             ->model
-            ->withCount('projects')
-            ->with('role');
+            ->with([
+                'role',
+                'projectMembers.project'
+            ]);
 
         return DataTables::of($eloquent)
             ->filter(function ($query) {

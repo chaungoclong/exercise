@@ -15,7 +15,14 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ChangePasswordController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
+use App\Models\Permission;
+use App\Models\Project;
+use App\Models\ProjectMember;
+use App\Models\User;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -163,9 +170,38 @@ Route::middleware(['auth', 'userActive'])->group(function () {
 
     Route::resource('users', UserController::class);
     // END: Manage Users
+
+    // BEGIN: Manage Project
+    Route::get(
+        'projects/datatables',
+        [ProjectController::class, 'datatables']
+    )->name('projects.datatables');
+
+    Route::resource('projects', ProjectController::class);
+    // END: Manage Project
 });
 // END: Private route
 
 Route::get('test', function () {
-    dd(toSelect2(\App\Models\Role::find(2), 'id', 'slug'));
+    $data = Project::find(7)->ProjectMembers->mapToGroups(function ($item) {
+        return [
+            $item->user_id => $item->position_id
+        ];
+    })->toArray();
+
+    // $data = Project::find(7)->ProjectMembers
+    //     ->mapToGroups(function ($item) {
+    //         return [
+    //             $item->user->id => $item->position
+    //         ];
+    //     })->map(function ($item, $key) use ($dataMapper) {
+    //         $user = $dataMapper->where('id', $key)->first();
+
+    //         return [
+    //             'user' => $user,
+    //             "positions" => $item
+    //         ];
+    //     });
+
+    dd($data);
 })->name('test');

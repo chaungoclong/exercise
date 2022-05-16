@@ -31,6 +31,50 @@ jQuery.validator.addMethod('phone', function (value, element) {
         /(84|0[3|5|7|8|9])+([0-9]{8})\b/.test(value);
 }, 'Vui lòng nhập số điện thoại hợp lệ');
 
+// Function reverse string
+const strReverse = (str) => {
+    if (typeof str === 'string') {
+        return str.split('').reverse().join('');
+    }
+
+    return '';
+}
+
+// Function reverse date string
+const dateReverse = (date) => {
+    if (typeof date === 'string') {
+        return date.split(/[\.\\\-\/]+/).reverse().join('-');
+    }
+
+    return '';
+}
+
+// Check Date Format dd/mm/yyyy || dd-mm-yyyy
+$.validator.addMethod('isDate', function (value, element) {
+    let regex =
+        /^(?=\d)(?:(?:31(?!.(?:0?[2469]|11))|(?:30|29)(?!.0?2)|29(?=.0?2.(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00)))(?:\x20|$))|(?:2[0-8]|1\d|0?[1-9]))([-.\/])(?:1[012]|0?[1-9])\1(?:1[6-9]|[2-9]\d)?\d\d(?:(?=\x20\d)\x20|$))?(((0?[1-9]|1[012])(:[0-5]\d){0,2}(\x20[AP]M))|([01]\d|2[0-3])(:[0-5]\d){1,2})?$/;
+
+    return this.optional(element) || regex.test(value);
+}, 'Vui lòng nhập ngày hợp lệ');
+
+// Check Field is Unique
+$.validator.addMethod('unique', function (value, element, selector = undefined) {
+    let count = 0;
+    let $listField = undefined;
+
+    if (selector === undefined) {
+        $listField = $(`[name="${element.name}"]`);
+    } else {
+        $listField = $(selector);
+    }
+
+    $listField.each(function () {
+        ($(this).val() === value) && (count++);
+    });
+
+    return (count === 1) || (count === 0);
+}, 'Trường này bị lặp lại');
+
 /**
  * Toast config reuse
  */

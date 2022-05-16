@@ -3,14 +3,16 @@
 namespace App\Models;
 
 
+use Carbon\Carbon;
 use App\Models\Role;
+use Laravel\Sanctum\HasApiTokens;
 use App\Traits\Authorization\HasRole;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -80,14 +82,14 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id', 'id');
     }
 
-    public function projects()
+    /**
+     * Get all of the Project's Member for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function projectMembers(): HasMany
     {
-        return $this->belongsToMany(
-            Project::class,
-            'project_user',
-            'user_id',
-            'project_id'
-        );
+        return $this->hasMany(ProjectMember::class, 'user_id', 'id');
     }
 
     /**
@@ -145,7 +147,6 @@ class User extends Authenticatable
         return Carbon::parse($value)->format('d-m-Y');
     }
 
-
     /**
      * Get fullname
      *
@@ -181,5 +182,18 @@ class User extends Authenticatable
     public function isUserGroup()
     {
         return (bool) (optional($this->role)->isUserGroup());
+    }
+
+    /**
+     * Get Users's Projects
+     *
+     * @return Collection
+     */
+    public function getProjectsAttribute(): Collection
+    {
+        return Project::whereIn(
+            'id',
+            $this->projectMembers->pluck('project_id')->toArray()
+        )->get();
     }
 }

@@ -11,8 +11,8 @@ use App\Repositories\Contracts\PositionRepository;
 use App\Repositories\Contracts\PermissionRepository;
 use App\Repositories\Eloquent\Role\EloquentRoleRepository;
 use App\Repositories\Eloquent\User\EloquentUserRepository;
-use App\Repositories\Eloquent\Position\EloquentReportRepository;
-use App\Repositories\Eloquent\Position\EloquentProjectRepository;
+use App\Repositories\Eloquent\Report\EloquentReportRepository;
+use App\Repositories\Eloquent\Project\EloquentProjectRepository;
 use App\Repositories\Eloquent\Position\EloquentPositionRepository;
 use App\Repositories\Eloquent\Permission\EloquentPermissionRepository;
 

@@ -198,3 +198,29 @@ if (!function_exists('toSelect2')) {
         return $options;
     }
 }
+
+
+if (!function_exists('pluckField')) {
+    /**
+     * Pluck field in Collection recursive
+     *
+     * @param [type] $object
+     * @param [type] $field
+     * @return array
+     */
+    function pluckField($object, $field): array
+    {
+        $results = [];
+
+        $object = collect($object)->toArray();
+
+        array_walk_recursive(
+            $object,
+            function ($value, $key) use (&$results, $field) {
+                ($key === $field) && $results[] = $value;
+            }
+        );
+
+        return array_unique($results);
+    }
+}

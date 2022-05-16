@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Project;
+
 return [
     // Sort Type
     'sort' => [
@@ -23,5 +25,29 @@ return [
         'in_progress' => 'badge rounded-pill badge-light-primary',
         'completed' => 'badge rounded-pill badge-light-success',
         'cancelled' => 'badge rounded-pill badge-light-danger'
+    ],
+
+    // Project Status
+    'project_status' => [
+        Project::STATUS_ON_HOLD => [
+            'badge' => 'badge rounded-pill badge-light-info',
+            'name' => 'on hold',
+            'bg' => 'bg-info'
+        ],
+        Project::STATUS_CANCELLED => [
+            'badge' => 'badge rounded-pill badge-light-danger',
+            'name' => 'cancelled',
+            'bg' => 'bg-danger'
+        ],
+        Project::STATUS_IN_PROGRESS => [
+            'badge' => 'badge rounded-pill badge-light-primary',
+            'name' => 'in progress',
+            'bg' => 'bg-primary'
+        ],
+        Project::STATUS_COMPLETED => [
+            'badge' => 'badge rounded-pill badge-light-success',
+            'name' => 'completed',
+            'bg' => 'bg-success'
+        ],
     ]
 ];
