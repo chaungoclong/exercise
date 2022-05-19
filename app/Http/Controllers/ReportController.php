@@ -66,7 +66,8 @@ class ReportController extends Controller
     }
 
     /**
-     * This method is used to get the return data for the create form. If the incoming request is for the admin page, it will return a list of converted users to select2. If the request is for an employee page, a list of projects is returned. When the user selects fields on the form, an Ajax request is sent to the "getSelectOptions" method to select the relevant fields.
+     *This method is used to get the return data for the create form. If the *incoming request is for the admin page, it will return a list of *converted users to select2. If the request is for an employee page, a *list of projects is returned. When the user selects fields on the form, *an Ajax request is sent to the "getSelectOptions" method to select the *relevant fields.
+     *
      * @param Request $request
      * @return JsonResponse
      */
@@ -218,7 +219,7 @@ class ReportController extends Controller
     }
 
     /**
-     * This method returns a list of data for the edit form. Here will return a Report Model to display the information of the report. On the form there are selection fields that are related to each other. When User is selected, the list of User's Projects will be loaded. When Project is selected a list of Positions will be loaded. So this method will return a list of options that belong to the User object. If it is the Admin page, it will return a list of Users, a list of Projects of the selected User, the Positions of the selected Project. If it is an Employee page, it will return a list of Projects of the current User, a list of Positions of the selected Project. Selected options are determined based on the value of equivalent properties on the Report object. An Option will be selected if it is equal to the equivalent property on the Report object
+     *This method returns a list of data for the edit form. Here will return a *Report Model to display the information of the report. On the form there *are selection fields that are related to each other. When User is *selected, the list of User's Projects will be loaded. When Project is *selected a list of Positions will be loaded. So this method will return a *list of options that belong to the User object. If it is the Admin page, *it will return a list of Users, a list of Projects of the selected User, *the Positions of the selected Project. If it is an Employee page, it will *return a list of Projects of the current User, a list of Positions of the *selected Project. Selected options are determined based on the value of *equivalent properties on the Report object. An Option will be selected if *it is equal to the equivalent property on the Report object
      *
      * @param Report $report
      * @param Request $request

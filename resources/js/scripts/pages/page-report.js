@@ -40,7 +40,7 @@
                     d.to_date = $('#reportToDate').val();
                 }
             },
-            order: [[4, 'desc']],
+            order: [[3, 'desc']],
             columns: [
                 {
                     data: 'project_id',
@@ -120,14 +120,15 @@
         let $workingTypeSelect = $('#working_type');
 
         // Date input in form save report
-        let $dateInput = $saveReportForm.find('#date').flatpickr({
-            altInput: true,
-            altFormat: 'd-m-Y',
-            maxDate: 'today',
-            onReady: function (selectedDates, dateStr, instance) {
-                instance.altInput.name = 'date_alt';
-            }
-        });
+        let $dateInput = $saveReportForm.find('#date')
+            .flatpickr({
+                altInput: true,
+                altFormat: 'd-m-Y',
+                maxDate: 'today',
+                onReady: function (selectedDates, dateStr, instance) {
+                    instance.altInput.name = 'date_alt';
+                }
+            });
 
         // Function Filter
         function filter(event) {
@@ -267,10 +268,11 @@
                     $saveReportForm.jsonToForm(report, {
                         // Init project select and set option selected
                         project_id: (value) => {
-                            $projectSelect.select2({
-                                placeholder: 'Select Project',
-                                data: projectOptions
-                            })
+                            $projectSelect
+                                .select2({
+                                    placeholder: 'Select Project',
+                                    data: projectOptions
+                                })
                                 .val(value)
                                 .trigger('change.select2');
                         },
@@ -300,8 +302,7 @@
                             $dateInput.setDate(value, true, 'd-m-Y');
                         },
                     });
-                })
-                .fail((xhr) => {
+                }).fail((xhr) => {
                     showToast(xhr, 'error');
                 });
         }
@@ -448,9 +449,10 @@
         });
 
         // Validate(position select, working type select) when is changed
-        $positionSelect.add($workingTypeSelect).on('change', function () {
-            $(this).valid();
-        });
+        $positionSelect.add($workingTypeSelect)
+            .on('change', function () {
+                $(this).valid();
+            });
 
         // Open Modal For Create
         $('#createReport').on('click', openModalCreate);

@@ -197,20 +197,25 @@ class EloquentReportRepository extends EloquentBaseRepository implements
                 if (!empty(request('search'))) {
                     $search = request('search');
 
-                    $query->where(function ($reportQuery) use ($search) {
-                        $reportQuery->where('working_time', $search)
-                            ->orWhere('note', $search);
-                    })->orWhereHas(
-                        'position',
-                        function ($positionQuery) use ($search) {
-                            $positionQuery->where('name', 'LIKE', "%$search%");
-                        }
-                    )->orWhereHas(
-                        'project',
-                        function ($projectQuery) use ($search) {
-                            $projectQuery->where('name', 'LIKE', "%$search%");
-                        }
-                    );
+                    $query->where(function ($subQuery) use ($search) {
+                        $subQuery->where(function ($reportQuery) use ($search) {
+                            $reportQuery
+                                ->where('working_time', $search)
+                                ->orWhere('note', $search);
+                        })->orWhereHas(
+                            'position',
+                            function ($positionQuery) use ($search) {
+                                $positionQuery
+                                    ->where('name', 'LIKE', "%$search%");
+                            }
+                        )->orWhereHas(
+                            'project',
+                            function ($projectQuery) use ($search) {
+                                $projectQuery
+                                    ->where('name', 'LIKE', "%$search%");
+                            }
+                        );
+                    });
                 }
             })
             ->editColumn('project_id', function ($report) {
@@ -324,29 +329,32 @@ class EloquentReportRepository extends EloquentBaseRepository implements
                 if (!empty(request('search'))) {
                     $search = request('search');
 
-                    $query->where(function ($reportQuery) use ($search) {
-                        $reportQuery->where('working_time', $search)
-                            ->orWhere('note', $search);
-                    })->orWhereHas(
-                        'position',
-                        function ($positionQuery) use ($search) {
-                            $positionQuery->where('name', 'LIKE', "%$search%");
-                        }
-                    )->orWhereHas(
-                        'project',
-                        function ($projectQuery) use ($search) {
-                            $projectQuery->where('name', 'LIKE', "%$search%");
-                        }
-                    )->orWhereHas(
-                        'user',
-                        function ($userQuery) use ($search) {
-                            $userQuery->where('email', 'LIKE', "%$search%");
-                        }
-                    );
+                    $query->where(function ($subQuery) use ($search) {
+                        $subQuery->where(function ($reportQuery) use ($search) {
+                            $reportQuery
+                                ->where('working_time', $search)
+                                ->orWhere('note', $search);
+                        })->orWhereHas(
+                            'position',
+                            function ($positionQuery) use ($search) {
+                                $positionQuery
+                                    ->where('name', 'LIKE', "%$search%");
+                            }
+                        )->orWhereHas(
+                            'project',
+                            function ($projectQuery) use ($search) {
+                                $projectQuery
+                                    ->where('name', 'LIKE', "%$search%");
+                            }
+                        );
+                    });
                 }
             })
             ->addColumn('user', function ($report) {
-                return $report->user->email;
+                return view(
+                    'components.datatables.user-col',
+                    ['user' => $report->user]
+                );
             })
             ->editColumn('project_id', function ($report) {
                 return optional($report->project)->name;

@@ -123,14 +123,15 @@
         let $workingTypeSelect = $('#working_type');
 
         // Date input in form save report
-        let $dateInput = $saveReportForm.find('#date').flatpickr({
-            altInput: true,
-            altFormat: 'd-m-Y',
-            maxDate: 'today',
-            onReady: function (selectedDates, dateStr, instance) {
-                instance.altInput.name = 'date_alt';
-            }
-        });
+        let $dateInput = $saveReportForm.find('#date')
+            .flatpickr({
+                altInput: true,
+                altFormat: 'd-m-Y',
+                maxDate: 'today',
+                onReady: function (selectedDates, dateStr, instance) {
+                    instance.altInput.name = 'date_alt';
+                }
+            });
 
         // Function Filter
         function filter(event) {
@@ -258,18 +259,17 @@
 
             $.get(url, {
                 page: PAGE_ADMIN
-            })
-                .done((response) => {
-                    // Init user select
-                    $userSelect
-                        .wrap('<div class="position-relative"></div>').select2({
-                            placeholder: 'Select User',
-                            data: response.data.userOptions
-                        });
-                })
-                .fail((xhr) => {
-                    showToast(xhr, 'error');
-                });
+            }).done((response) => {
+                // Init user select
+                $userSelect
+                    .wrap('<div class="position-relative"></div>')
+                    .select2({
+                        placeholder: 'Select User',
+                        data: response.data.userOptions
+                    });
+            }).fail((xhr) => {
+                showToast(xhr, 'error');
+            });
         }
 
         // Function open modal edit
@@ -312,10 +312,11 @@
                     },
                     // Init project select and set option selected
                     project_id: (value) => {
-                        $projectSelect.select2({
-                            placeholder: 'Select Project',
-                            data: projectOptions
-                        })
+                        $projectSelect
+                            .select2({
+                                placeholder: 'Select Project',
+                                data: projectOptions
+                            })
                             .val(value)
                             .trigger('change.select2');
                     },
@@ -345,10 +346,9 @@
                         $dateInput.setDate(value, true, 'd-m-Y');
                     },
                 });
-            })
-                .fail((xhr) => {
-                    showToast(xhr, 'error');
-                });
+            }).fail((xhr) => {
+                showToast(xhr, 'error');
+            });
         }
 
         // Function Save Report
@@ -511,9 +511,10 @@
         });
 
         // Validate(position select, working type select) when is changed
-        $positionSelect.add($workingTypeSelect).on('change', function () {
-            $(this).valid();
-        });
+        $positionSelect.add($workingTypeSelect)
+            .on('change', function () {
+                $(this).valid();
+            });
 
         // Open Modal For Create
         $('#createReport').on('click', openModalCreate);
