@@ -6,8 +6,8 @@
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <span class="fw-bolder fs-2 text-white">
-                    Create Report
+                <span class="fw-bolder fs-2 text-white"
+                    id="saveReportModalLabel">
                 </span>
                 <button type="button"
                     class="btn-close"

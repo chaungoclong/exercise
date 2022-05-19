@@ -130,7 +130,7 @@
 @push('phpToJs')
     {{-- URL Create --}}
     <input type="hidden"
-        id="url_create"
+        id="urlCreate"
         value="{{ route('reports.create') }}">
 
     {{-- URL Create --}}
@@ -155,5 +155,5 @@
 @endpush
 
 @push('page-script')
-    <script></script>
+    <script src="{{ asset(mix('js/scripts/pages/page-manager-report.js')) }}"></script>
 @endpush

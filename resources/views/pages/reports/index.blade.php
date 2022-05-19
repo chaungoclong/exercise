@@ -129,7 +129,7 @@
 @push('phpToJs')
     {{-- URL Create --}}
     <input type="hidden"
-        id="url_create"
+        id="urlCreate"
         value="{{ route('reports.create') }}">
 
     {{-- URL Store --}}
@@ -154,5 +154,5 @@
 @endpush
 
 @push('page-script')
-    <script src="{{ asset(mix('js/scripts/pages/page-report-employee.js')) }}"></script>
+    <script src="{{ asset(mix('js/scripts/pages/page-report.js')) }}"></script>
 @endpush
