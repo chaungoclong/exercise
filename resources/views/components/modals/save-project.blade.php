@@ -5,21 +5,20 @@
     aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-save-project">
         <div class="modal-content">
-            <div class="modal-header bg-transparent">
+            <div class="modal-header bg-primary">
+                <div class="fw-bolder text-white fs-2"
+                    id="saveProjectModalLabel">
+                </div>
                 <button type="button"
                     class="btn-close"
                     data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
             <div class="modal-body pb-5 pt-50">
-                <div class="text-center mb-2">
-                    <h1 class="mb-1 save-modal-title"
-                        id="saveProjectModalLabel"></h1>
-                </div>
                 <form id="saveProjectForm">
                     <div class="row">
                         <div class="col-12 p-0">
-                            <div class="card">
+                            <div class="card shadow-none">
                                 <div class="card-header">
                                     <h4 class="card-title">General</h4>
                                     <div class="heading-elements">
@@ -109,9 +108,9 @@
                                 </div>
                             </div>
                         </div>
-
+                        <div class="dropdown-divider"></div>
                         <div class="col-12 p-0">
-                            <div class="card">
+                            <div class="card shadow-none">
                                 <div class="card-header">
                                     <h4 class="card-title">Project Members</h4>
                                     <div class="heading-elements">

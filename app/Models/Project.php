@@ -43,6 +43,16 @@ class Project extends Model
         return $this->hasMany(ProjectMember::class, 'project_id', 'id');
     }
 
+    /**
+     * Get all of the Report for the Project
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reports(): HasMany
+    {
+        return $this->hasMany(Report::class, 'project_id', 'id');
+    }
+
     public function getCreatedAtTextAttribute()
     {
         return Carbon::parse($this->attributes['created_at'])->format('d-m-Y');

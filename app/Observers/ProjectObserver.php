@@ -37,6 +37,8 @@ class ProjectObserver
     public function deleted(Project $project)
     {
         $project->projectMembers()->delete();
+
+        $project->reports()->delete();
     }
 
     /**

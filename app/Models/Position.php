@@ -26,4 +26,14 @@ class Position extends Model
     {
         return $this->hasMany(ProjectMember::class, 'position_id', 'id');
     }
+
+    /**
+     * Get all of the Report for the Position
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reports(): HasMany
+    {
+        return $this->hasMany(Report::class, 'position_id', 'id');
+    }
 }

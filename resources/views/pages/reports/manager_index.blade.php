@@ -1,5 +1,5 @@
 @extends('layouts.customs.app')
-@section('title', 'My Report')
+@section('title', 'Manager Report')
 @push('vendor-style')
     <link rel="stylesheet"
         href="{{ asset(mix('vendors/css/tables/datatable/dataTables.bootstrap5.min.css')) }}">
@@ -94,6 +94,7 @@
                     id="reportTable">
                     <thead class="table-light">
                         <tr>
+                            <th>User</th>
                             <th>Project</th>
                             <th>Position</th>
                             <th>Time</th>
@@ -111,7 +112,7 @@
     {{-- /Report Table --}}
 
     {{-- Save Report Modal --}}
-    <x-modals.save-report></x-modals.save-report>
+    <x-modals.save-report-manager></x-modals.save-report-manager>
 @endsection
 
 @push('vendor-script')
@@ -132,15 +133,15 @@
         id="url_create"
         value="{{ route('reports.create') }}">
 
+    {{-- URL Create --}}
+    <input type="hidden"
+        id="urlDatatables"
+        value="{{ route('reports.datatables_manager') }}">
+
     {{-- URL Store --}}
     <input type="hidden"
         id="urlStore"
         value="{{ route('reports.store') }}">
-
-    {{-- URL Datatables --}}
-    <input type="hidden"
-        id="urlDatatables"
-        value="{{ route('reports.datatables') }}">
 
     {{-- Auth ID --}}
     <input type="hidden"
@@ -154,5 +155,5 @@
 @endpush
 
 @push('page-script')
-    <script src="{{ asset(mix('js/scripts/pages/page-report-employee.js')) }}"></script>
+    <script></script>
 @endpush

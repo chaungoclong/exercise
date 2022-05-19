@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Project;
+use App\Models\Report;
 
 return [
     // Sort Type
@@ -48,6 +49,38 @@ return [
             'badge' => 'badge rounded-pill badge-light-success',
             'name' => 'completed',
             'bg' => 'bg-success'
+        ],
+    ],
+
+    // Report status
+    'report_status' => [
+        Report::STATUS_PENDING => [
+            'name' => 'Pending',
+            'badge' => 'badge rounded-pill badge-light-warning',
+        ],
+        Report::STATUS_APPROVED => [
+            'name' => 'Approved',
+            'badge' => 'badge rounded-pill badge-light-success',
+        ]
+    ],
+
+    // Working type
+    'working_type' => [
+        Report::WORKING_TYPE_OFFSITE => [
+            'name' => 'Offsite',
+            'badge' => 'badge rounded-pill badge-light-success'
+        ],
+        Report::WORKING_TYPE_ONSITE => [
+            'name' => 'Onsite',
+            'badge' => 'badge rounded-pill badge-light-primary'
+        ],
+        Report::WORKING_TYPE_REMOTE => [
+            'name' => 'Remote',
+            'badge' => 'badge rounded-pill badge-light-warning'
+        ],
+        Report::WORKING_TYPE_OFF => [
+            'name' => 'Off',
+            'badge' => 'badge rounded-pill badge-light-danger'
         ],
     ]
 ];

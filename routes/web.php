@@ -2,27 +2,20 @@
 
 namespace App;
 
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\StaterkitController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Repositories\Contracts\UserRepository;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ChangePasswordController;
-use App\Http\Controllers\PermissionController;
-use App\Http\Controllers\PositionController;
-use App\Http\Controllers\ProjectController;
-use App\Http\Controllers\UserController;
-use App\Models\Permission;
-use App\Models\Project;
-use App\Models\ProjectMember;
-use App\Models\User;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -179,29 +172,44 @@ Route::middleware(['auth', 'userActive'])->group(function () {
 
     Route::resource('projects', ProjectController::class);
     // END: Manage Project
+
+    // BEGIN: Manage Report
+    // Datatables Report for Employee page
+    Route::get(
+        'reports/datatables',
+        [ReportController::class, 'datatables']
+    )->name('reports.datatables');
+
+    // List report Admin page
+    Route::get(
+        'manager-reports',
+        [ReportController::class, 'index']
+    )->name('reports.index_manager');
+
+    // Datatables Report for Admin page
+    Route::get(
+        'manager-reports/datatables',
+        [ReportController::class, 'datatablesManager']
+    )->name('reports.datatables_manager');
+
+    // Get option when create or edit
+    Route::get(
+        'reports/get-select-options',
+        [ReportController::class, 'getSelectOptions']
+    )->name('reports.get_select_options');
+
+    // Approve Report
+    Route::patch(
+        'reports/approve/{report}',
+        [ReportController::class, 'approve']
+    )->name('reports.approve');
+
+    // Route Resource
+    Route::resource('reports', ReportController::class);
+    // END: Manage Report
 });
 // END: Private route
 
-Route::get('test', function () {
-    $data = Project::find(7)->ProjectMembers->mapToGroups(function ($item) {
-        return [
-            $item->user_id => $item->position_id
-        ];
-    })->toArray();
-
-    // $data = Project::find(7)->ProjectMembers
-    //     ->mapToGroups(function ($item) {
-    //         return [
-    //             $item->user->id => $item->position
-    //         ];
-    //     })->map(function ($item, $key) use ($dataMapper) {
-    //         $user = $dataMapper->where('id', $key)->first();
-
-    //         return [
-    //             'user' => $user,
-    //             "positions" => $item
-    //         ];
-    //     });
-
-    dd($data);
+Route::get('test', function (\Illuminate\Http\Request $request) {
+    dd($request->xyz);
 })->name('test');

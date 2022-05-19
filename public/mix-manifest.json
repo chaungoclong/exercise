@@ -157,6 +157,7 @@
     "/js/scripts/pages/page-profile.js": "/js/scripts/pages/page-profile.js",
     "/js/scripts/pages/page-project-show.js": "/js/scripts/pages/page-project-show.js",
     "/js/scripts/pages/page-project.js": "/js/scripts/pages/page-project.js",
+    "/js/scripts/pages/page-report-employee.js": "/js/scripts/pages/page-report-employee.js",
     "/js/scripts/pages/page-roles.js": "/js/scripts/pages/page-roles.js",
     "/js/scripts/pages/page-user-profile.js": "/js/scripts/pages/page-user-profile.js",
     "/js/scripts/pages/page-user-show.js": "/js/scripts/pages/page-user-show.js",

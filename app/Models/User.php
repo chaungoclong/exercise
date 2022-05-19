@@ -93,6 +93,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Get all of the Report for the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function reports(): HasMany
+    {
+        return $this->hasMany(Report::class, 'user_id', 'id');
+    }
+
+    /**
      * [isActive description]
      * @return boolean [description]
      */
@@ -185,7 +195,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Get Users's Projects
+     * Get All Users's Projects
      *
      * @return Collection
      */
@@ -194,6 +204,19 @@ class User extends Authenticatable
         return Project::whereIn(
             'id',
             $this->projectMembers->pluck('project_id')->toArray()
+        )->get();
+    }
+
+    /**
+     * Get All Users's Positions
+     *
+     * @return Collection
+     */
+    public function getPositionsAttribute(): Collection
+    {
+        return Position::whereIn(
+            'id',
+            $this->projectMembers->pluck('position_id')->toArray()
         )->get();
     }
 }
