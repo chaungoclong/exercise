@@ -36,7 +36,7 @@
         },
         {
             "url": "users",
-            "name": "User",
+            "name": "Users",
             "icon": "user",
             "slug": "users.index",
             "permission": "users_read"
@@ -50,10 +50,32 @@
         },
         {
             "url": "projects",
-            "name": "Project",
+            "name": "Projects",
             "icon": "briefcase",
             "slug": "projects.index",
             "permission": "projects_read"
+        },
+        {
+            "name": "Reports",
+            "icon": "calendar",
+            "slug": "",
+            "permission": "reports_read",
+            "submenu": [
+                {
+                    "url": "manager-reports",
+                    "name": "Manager Reports",
+                    "icon": "circle",
+                    "slug": "reports.index_manager",
+                    "permission": "reports_read"
+                },
+                {
+                    "url": "reports",
+                    "name": "My Reports",
+                    "icon": "circle",
+                    "slug": "reports.index",
+                    "permission": "reports_read"
+                }
+            ]
         },
         {
             "name": "Page Layouts",

@@ -46,4 +46,24 @@ interface ReportRepository extends BaseRepository
      *
      */
     public function datatablesManager();
+
+    /**
+     * Get Position Options By Project
+     *
+     * @param integer|string $userId
+     * @param integer|string $projectId
+     * @return array
+     */
+    public function getPositionOptions(
+        int|string $userId,
+        int|string $projectId
+    ): array;
+
+    /**
+     * Get Project Options By User
+     *
+     * @param integer|string $userId
+     * @return array
+     */
+    public function getProjectOptions(int|string $userId): array;
 }

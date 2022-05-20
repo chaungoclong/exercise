@@ -37,6 +37,9 @@
                     d.status = $('#reportStatus').val();
                     d.from_date = $('#reportFromDate').val();
                     d.to_date = $('#reportToDate').val();
+                },
+                error: (xhr) => {
+                    showToast(xhr, 'error');
                 }
             },
             order: [[4, 'desc']],
@@ -168,6 +171,7 @@
                     .wrap('<div class="position-relative"></div>')
                     .empty()
                     .select2({
+                        dropdownParent: $saveReportModal,
                         placeholder: 'Select Project',
                         data: response.data.options
                     })
@@ -189,6 +193,7 @@
                     .wrap('<div class="position-relative"></div>')
                     .empty()
                     .select2({
+                        dropdownParent: $saveReportModal,
                         placeholder: 'Select Position',
                         data: response.data.options
                     })
@@ -213,6 +218,7 @@
                 .wrap('<div class="position-relative"></div>')
                 .empty()
                 .select2({
+                    dropdownParent: $saveReportModal,
                     placeholder: 'Select Project'
                 });
 
@@ -221,6 +227,7 @@
                 .wrap('<div class="position-relative"></div>')
                 .empty()
                 .select2({
+                    dropdownParent: $saveReportModal,
                     placeholder: 'Select Position'
                 });
 
@@ -228,6 +235,7 @@
             $workingTypeSelect
                 .wrap('<div class="position-relative"></div>')
                 .select2({
+                    dropdownParent: $saveReportModal,
                     placeholder: 'Select Working Type'
                 });
         }
@@ -264,6 +272,7 @@
                 $userSelect
                     .wrap('<div class="position-relative"></div>')
                     .select2({
+                        dropdownParent: $saveReportModal,
                         placeholder: 'Select User',
                         data: response.data.userOptions
                     });
@@ -304,6 +313,7 @@
                         $userSelect
                             .wrap('<div class="position-relative"></div>')
                             .select2({
+                                dropdownParent: $saveReportModal,
                                 placeholder: 'Select User',
                                 data: userOptions
                             })
@@ -314,6 +324,7 @@
                     project_id: (value) => {
                         $projectSelect
                             .select2({
+                                dropdownParent: $saveReportModal,
                                 placeholder: 'Select Project',
                                 data: projectOptions
                             })
@@ -325,6 +336,7 @@
                         $positionSelect
                             .wrap('<div class="position-relative"></div>')
                             .select2({
+                                dropdownParent: $saveReportModal,
                                 placeholder: 'Select Position',
                                 data: positionOptions
                             })
@@ -336,6 +348,7 @@
                         $workingTypeSelect
                             .wrap('<div class="position-relative"></div>')
                             .select2({
+                                dropdownParent: $saveReportModal,
                                 placeholder: 'Select Working Type',
                             })
                             .val(value)

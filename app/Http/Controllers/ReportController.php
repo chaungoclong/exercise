@@ -4,10 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Report;
-use App\Models\Project;
-use App\Models\Position;
 use Illuminate\Http\Request;
-use App\Models\ProjectMember;
 use App\Exceptions\FailException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
@@ -26,6 +23,31 @@ class ReportController extends Controller
     public function __construct(ReportRepository $reportRepository)
     {
         $this->reportRepository = $reportRepository;
+
+        $this->middleware('permission:reports_read')
+            ->only([
+                'index',
+                'datatables',
+                'datatablesManager'
+            ]);
+
+        $this->middleware('permission:reports_create')
+            ->only([
+                'create',
+                'store',
+                'getProjectOptions'
+            ]);
+
+        $this->middleware('permission:reports_update')
+            ->only([
+                'edit',
+                'update',
+                'switchStatus',
+                'getProjectOptions'
+            ]);
+
+        $this->middleware('permission:reports_delete')
+            ->only(['destroy']);
     }
 
     /**
@@ -41,10 +63,30 @@ class ReportController extends Controller
                 __('This action is unauthorized.')
             );
 
-            return view('pages.reports.manager_index');
+            // Breadcrumbs Mamager Reports Page
+            $breadcrumbs =  [
+                ['link' => "home", 'name' => "Home"],
+                ['link' => 'manager-reports', 'name' => "Manager Reports"],
+                ['name' => 'Index']
+            ];
+
+            return view(
+                'pages.reports.manager_index',
+                ['breadcrumbs' => $breadcrumbs]
+            );
         }
 
-        return view('pages.reports.index');
+        // Breadcrumbs My Reports Page
+        $breadcrumbs =  [
+            ['link' => "home", 'name' => "Home"],
+            ['link' => 'reports', 'name' => "My Reports"],
+            ['name' => 'Index']
+        ];
+
+        return view(
+            'pages.reports.index',
+            ['breadcrumbs' => $breadcrumbs]
+        );
     }
 
     /**
@@ -88,7 +130,8 @@ class ReportController extends Controller
         }
 
         // If is Page For Employee then return project options of current user
-        $projectOptions = $this->getProjectOptions(auth()->id());
+        $projectOptions = $this->reportRepository
+            ->getProjectOptions(auth()->id());
 
         return jsend_success(['projectOptions' => $projectOptions]);
     }
@@ -100,6 +143,7 @@ class ReportController extends Controller
      */
     public function getSelectOptions(Request $request)
     {
+        // Type: get 'project'|'position'
         $type = $request->type;
 
         if (empty($type)) {
@@ -115,10 +159,12 @@ class ReportController extends Controller
                     return jsend_success(['options' => []]);
                 }
 
-                return jsend_success([
-                    'options' => $this->getPositionOptions($userId, $projectId)
-                ]);
+                $options = $this->reportRepository
+                    ->getPositionOptions($userId, $projectId);
 
+                return jsend_success([
+                    'options' => $options
+                ]);
                 break;
 
             case self::SELECT_TYPE_PROJECT:
@@ -126,64 +172,18 @@ class ReportController extends Controller
                     return jsend_success(['options' => []]);
                 }
 
-                return jsend_success([
-                    'options' => $this->getProjectOptions($userId)
-                ]);
+                $options = $this->reportRepository
+                    ->getProjectOptions($userId);
 
+                return jsend_success([
+                    'options' => $options
+                ]);
                 break;
 
             default:
                 return jsend_success(['options' => []]);
                 break;
         }
-    }
-
-    /**
-     * Get Position Options By Project
-     *
-     * @param integer|string $userId
-     * @param integer|string $projectId
-     * @return array
-     */
-    public function getPositionOptions(
-        int|string $userId,
-        int|string $projectId
-    ): array {
-        $positionOptions = [];
-
-        $positions = Position::whereIn(
-            'id',
-            ProjectMember::where('user_id', $userId)
-                ->where('project_id', $projectId)
-                ->pluck('position_id')
-                ->toArray()
-        )->get();
-
-        $positionOptions = toSelect2($positions, 'id', 'name');
-
-        return $positionOptions;
-    }
-
-    /**
-     * Get Project Options By User
-     *
-     * @param integer|string $userId
-     * @return array
-     */
-    public function getProjectOptions(int|string $userId): array
-    {
-        $projectOptions = [];
-
-        $projects = Project::whereIn(
-            'id',
-            ProjectMember::where('user_id', $userId)
-                ->pluck('project_id')
-                ->toArray()
-        )->get();
-
-        $projectOptions = toSelect2($projects, 'id', 'name');
-
-        return $projectOptions;
     }
 
     /**
@@ -229,12 +229,16 @@ class ReportController extends Controller
     {
         $report->load(['user', 'project', 'position']);
 
-        $projectOptions = $this->getProjectOptions($report->user_id);
+        // List project options belong to Report's User
+        $projectOptions = $this->reportRepository
+            ->getProjectOptions($report->user_id);
 
-        $positionOptions = $this->getPositionOptions(
-            $report->user_id,
-            $report->project_id
-        );
+        // List position options belong to Report's Project
+        $positionOptions = $this->reportRepository
+            ->getPositionOptions(
+                $report->user_id,
+                $report->project_id
+            );
 
         // If is Page for Admin|Manager then return options User
         if (!empty($request->page) && $request->page == self::PAGE_ADMIN) {
@@ -245,6 +249,7 @@ class ReportController extends Controller
 
             $users = User::where('status', User::STATUS_ACTIVE)->get();
 
+            // List user options
             $userOptions = toSelect2($users, 'id', 'full_name');
 
             return jsend_success([

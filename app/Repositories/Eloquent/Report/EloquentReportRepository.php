@@ -3,6 +3,9 @@
 namespace App\Repositories\Eloquent\Report;
 
 use App\Models\Report;
+use App\Models\Project;
+use App\Models\Position;
+use App\Models\ProjectMember;
 use App\Exceptions\FailException;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
@@ -346,6 +349,31 @@ class EloquentReportRepository extends EloquentBaseRepository implements
                                 $projectQuery
                                     ->where('name', 'LIKE', "%$search%");
                             }
+                        )->orWhereHas(
+                            'user',
+                            function ($userQuery) use ($search) {
+                                $userQuery
+                                    ->where(
+                                        function ($userSubQuery) use ($search) {
+                                            $userSubQuery
+                                                ->where(
+                                                    'email',
+                                                    'LIKE',
+                                                    "%$search%"
+                                                )
+                                                ->orWhere(
+                                                    'first_name',
+                                                    'LIKE',
+                                                    "%$search%"
+                                                )
+                                                ->orWhere(
+                                                    'last_name',
+                                                    'LIKE',
+                                                    "%$search%"
+                                                );
+                                        }
+                                    );
+                            }
                         );
                     });
                 }
@@ -401,5 +429,53 @@ class EloquentReportRepository extends EloquentBaseRepository implements
                 'actions'
             ])
             ->make(true);
+    }
+
+    /**
+     * Get Position Options By Project
+     *
+     * @param integer|string $userId
+     * @param integer|string $projectId
+     * @return array
+     */
+    public function getPositionOptions(
+        int|string $userId,
+        int|string $projectId
+    ): array {
+        $positionOptions = [];
+
+        $positions = Position::whereIn(
+            'id',
+            ProjectMember::where('user_id', $userId)
+                ->where('project_id', $projectId)
+                ->pluck('position_id')
+                ->toArray()
+        )->get();
+
+        $positionOptions = toSelect2($positions, 'id', 'name');
+
+        return $positionOptions;
+    }
+
+    /**
+     * Get Project Options By User
+     *
+     * @param integer|string $userId
+     * @return array
+     */
+    public function getProjectOptions(int|string $userId): array
+    {
+        $projectOptions = [];
+
+        $projects = Project::whereIn(
+            'id',
+            ProjectMember::where('user_id', $userId)
+                ->pluck('project_id')
+                ->toArray()
+        )->get();
+
+        $projectOptions = toSelect2($projects, 'id', 'name');
+
+        return $projectOptions;
     }
 }
