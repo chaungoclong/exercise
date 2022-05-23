@@ -224,3 +224,25 @@ if (!function_exists('pluckField')) {
         return array_unique($results);
     }
 }
+
+if (!function_exists('randomColor')) {
+    function randomColor(int $number)
+    {
+        $hue = $number * 137.508;
+
+        return "hsl($hue, 100%, 75%)";
+    }
+}
+
+if (!function_exists('randomManyColor')) {
+    function randomManyColor(int $numberColor)
+    {
+        $colors = [];
+
+        for ($i = 0; $i < $numberColor; $i++) {
+            $colors[] = randomColor($i);
+        }
+
+        return $colors;
+    }
+}

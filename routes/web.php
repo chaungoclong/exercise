@@ -9,6 +9,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\StaterkitController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PermissionController;
@@ -16,6 +17,9 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ChangePasswordController;
+use App\Http\Controllers\StatisticController;
+use App\Models\User;
+use Illuminate\Support\Arr;
 
 /*
 |--------------------------------------------------------------------------
@@ -88,10 +92,9 @@ Route::middleware(['guest'])->group(function () {
 
 // BEGIN: Private route
 Route::middleware(['auth', 'userActive'])->group(function () {
-    Route::get('/', [StaterkitController::class, 'home'])
+    Route::get('/', [DashboardController::class, 'index'])
         ->name('home');
-
-    Route::get('home', [StaterkitController::class, 'home'])
+    Route::get('home', [DashboardController::class, 'index'])
         ->name('home');
 
     // BEGIN: Logout
@@ -207,9 +210,25 @@ Route::middleware(['auth', 'userActive'])->group(function () {
     // Route Resource
     Route::resource('reports', ReportController::class);
     // END: Manage Report
+
+    Route::prefix('statistics')
+        ->name('statistics.')
+        ->group(function () {
+            Route::get(
+                'user/{userId?}',
+                [
+                    StatisticController::class,
+                    'getUserStatistics'
+                ]
+            )->name('user');
+
+            Route::get(
+                'project',
+                [
+                    StatisticController::class,
+                    'getProjectStatistics'
+                ]
+            )->name('project');
+        });
 });
 // END: Private route
-
-Route::get('test', function (\Illuminate\Http\Request $request) {
-    dd($request->xyz);
-})->name('test');

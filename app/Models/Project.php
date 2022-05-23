@@ -125,4 +125,17 @@ class Project extends Model
             $this->projectMembers->pluck('user_id')->toArray()
         )->get();
     }
+
+    /**
+     * Get Project's Positions
+     *
+     * @return Collection
+     */
+    public function getPositionsAttribute(): Collection
+    {
+        return Position::whereIn(
+            'id',
+            $this->projectMembers->pluck('position_id')->toArray()
+        )->get();
+    }
 }

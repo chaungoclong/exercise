@@ -1,16 +1,10 @@
 {
     "menu": [
         {
-            "url": "home",
+            "url": "",
             "name": "Home",
             "icon": "home",
             "slug": "home"
-        },
-        {
-            "url": "test",
-            "name": "Test",
-            "icon": "home",
-            "slug": "register.form"
         },
         {
             "name": "Roles & Permission",
@@ -78,41 +72,21 @@
             ]
         },
         {
-            "name": "Page Layouts",
-            "icon": "mail",
+            "name": "Statistics",
+            "icon": "trending-up",
             "slug": "",
-            "badge": "5",
-            "badgeClass": "badge rounded-pill badge-light-danger ms-auto me-1",
             "submenu": [
                 {
-                    "url": "layouts/collapsed-menu",
-                    "name": "Collapsed Menu",
+                    "url": "statistics/user",
+                    "name": "User Working",
                     "icon": "circle",
-                    "slug": "collapsed-menu"
+                    "slug": "statistics.user"
                 },
                 {
-                    "url": "layouts/full",
-                    "name": "Layout Full",
+                    "url": "statistics/project",
+                    "name": "Project",
                     "icon": "circle",
-                    "slug": "layout-full"
-                },
-                {
-                    "url": "layouts/without-menu",
-                    "name": "Without Menu",
-                    "icon": "circle",
-                    "slug": "without-menu"
-                },
-                {
-                    "url": "layouts/empty",
-                    "name": "Layout Empty",
-                    "icon": "circle",
-                    "slug": "layout-empty"
-                },
-                {
-                    "url": "layouts/blank",
-                    "name": "Layout Blank",
-                    "icon": "circle",
-                    "slug": "layout-blank"
+                    "slug": "statistics.project"
                 }
             ]
         }
