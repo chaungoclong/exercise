@@ -17,6 +17,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ChangePasswordController;
+use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\StatisticController;
 use App\Models\User;
 use Illuminate\Support\Arr;
@@ -91,16 +92,38 @@ Route::middleware(['guest'])->group(function () {
 // END: Public route
 
 // BEGIN: Private route
-Route::middleware(['auth', 'userActive'])->group(function () {
+
+// BEGIN: Verify Email
+Route::get(
+    'email/verify',
+    [VerifyEmailController::class, 'showVerifyEmailPage']
+)->middleware('auth')
+    ->name('verification.notice');
+
+Route::get(
+    '/email/verify/{id}/{hash}',
+    [VerifyEmailController::class, 'verifyEmail']
+)->middleware(['auth', 'signed'])
+    ->name('verification.verify');
+
+Route::post(
+    '/email/verification-notification',
+    [VerifyEmailController::class, 'sendEmailVerificationNotification']
+)->middleware(['auth', 'throttle:6,1'])
+    ->name('verification.send');
+// END: Verify Email
+
+// BEGIN: Logout
+Route::post('logout', LogoutController::class)
+    ->name('logout')
+    ->middleware('auth');
+// END: Logout
+
+Route::middleware(['auth', 'userActive', 'verified'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])
         ->name('home');
     Route::get('home', [DashboardController::class, 'index'])
         ->name('home');
-
-    // BEGIN: Logout
-    Route::post('logout', LogoutController::class)
-        ->name('logout');
-    // END: Logout
 
     // BEGIN: Profile
     Route::controller(ProfileController::class)

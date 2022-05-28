@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Registered;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Exceptions\NoPermissionException;
 
@@ -38,6 +39,8 @@ class LoginController extends Controller
 
             throw new NoPermissionException();
         }
+
+        event(new Registered($user));
 
         return $this->loginSuccess();
     }
