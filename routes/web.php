@@ -17,6 +17,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\ProfileController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\ChangePasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\StatisticController;
 use App\Models\User;
@@ -88,6 +89,31 @@ Route::middleware(['guest'])->group(function () {
                 ->name('process');
         });
     // END: Login route
+
+    // BEGIN: Forgot password
+    Route::get(
+        'forgot-password',
+        [ResetPasswordController::class, 'showForgotPasswordForm']
+    )->name('password.request');
+
+    Route::post(
+        'forgot-password',
+        [ResetPasswordController::class, 'sendEmailResetPassword']
+    )->name('password.email');
+    // END: Forgot password
+
+    // BEGIN: Forgot password
+    Route::get(
+        'reset-password/{token}',
+        [ResetPasswordController::class, 'showResetPasswordForm']
+    )->name('password.reset');
+
+    Route::post(
+        'reset-password',
+        [ResetPasswordController::class, 'resetPassword']
+    )->name('password.update');
+
+    // END: Forgot password
 });
 // END: Public route
 
@@ -255,3 +281,7 @@ Route::middleware(['auth', 'userActive', 'verified'])->group(function () {
         });
 });
 // END: Private route
+
+Route::get('test', function () {
+    dd(\Illuminate\Support\Facades\Password::RESET_LINK_SENT);
+});

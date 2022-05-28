@@ -5,12 +5,14 @@ namespace App\Models;
 
 use Carbon\Carbon;
 use App\Models\Role;
+use App\Notifications\SendEmailResetPassword;
 use Laravel\Sanctum\HasApiTokens;
 use App\Traits\Authorization\HasRole;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -21,7 +23,8 @@ class User extends Authenticatable implements MustVerifyEmail
         Notifiable,
         HasRole,
         HasApiTokens,
-        SoftDeletes;
+        SoftDeletes,
+        CanResetPassword;
 
     // Gender
     public const GENDER_FEMALE = 0;
@@ -219,5 +222,15 @@ class User extends Authenticatable implements MustVerifyEmail
             'id',
             $this->projectMembers->pluck('position_id')->toArray()
         )->get();
+    }
+
+    public function sendPasswordResetNotification($token)
+    {
+        $url = 'http://exercise.test/reset-password/'
+            . $token
+            . '?email='
+            . $this->email;
+
+        $this->notify(new SendEmailResetPassword($url));
     }
 }
