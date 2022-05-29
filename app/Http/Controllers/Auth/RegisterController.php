@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Repositories\Contracts\UserRepository;
+use Illuminate\Auth\Events\Registered;
 
 /**
  * Overview:
@@ -49,6 +50,8 @@ class RegisterController extends Controller
             $payload['password'] = Hash::make($payload['password']);
 
             $user = $this->userRepository->registerUser($payload);
+
+            event(new Registered($user));
 
             return $this->responseSuccess($user);
         } catch (\Exception $e) {

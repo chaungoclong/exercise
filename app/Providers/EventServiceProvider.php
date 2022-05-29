@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Listeners\Auth\SendEmailVerify;
+use App\Listeners\Auth\SendEmailVerifyNoQueue;
 use App\Models\Project;
 use App\Models\Role;
 use App\Observers\ProjectObserver;
@@ -25,7 +26,8 @@ class EventServiceProvider extends ServiceProvider
         //     SendEmailVerificationNotification::class,
         // ],
         Registered::class => [
-            SendEmailVerify::class,
+            // SendEmailVerify::class,
+            SendEmailVerifyNoQueue::class
         ],
     ];
 

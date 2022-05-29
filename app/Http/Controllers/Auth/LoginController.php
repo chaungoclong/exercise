@@ -40,8 +40,6 @@ class LoginController extends Controller
             throw new NoPermissionException();
         }
 
-        event(new Registered($user));
-
         return $this->loginSuccess();
     }
 

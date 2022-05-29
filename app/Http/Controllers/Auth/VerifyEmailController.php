@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailVerify;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
@@ -46,7 +47,10 @@ class VerifyEmailController extends Controller
      */
     public function sendEmailVerificationNotification(Request $request)
     {
-        broadcast(new Registered($request->user()));
+        SendEmailVerify::dispatch($request->user())
+            ->onConnection('database')
+            ->onQueue('test')
+            ->afterCommit();
 
         toast()->success(__('Verification link sent!'))
             ->width('350px')
